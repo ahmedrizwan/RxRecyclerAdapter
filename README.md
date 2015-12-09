@@ -42,7 +42,7 @@ recyclerView.setAdapter(rxAdapter);
 ```
 And that's it!
 
-<img src="https://raw.githubusercontent.com/ahmedrizwan/RxRecyclerAdapter/master/app/src/main/res/drawable/recycler_screenshot.png"  />
+<img src="https://raw.githubusercontent.com/ahmedrizwan/RxRecyclerAdapter/master/app/src/main/res/drawable/recycler_adapter.png" width=400px  />
 
 
 ##Download 
