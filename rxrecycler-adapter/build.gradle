@@ -1,0 +1,62 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+
+ext {
+    // Where you will see your artifact in Bintray's web interface
+    // The "bintrayName" should match the name of the Bintray repro.
+    bintrayRepo = 'maven'
+    bintrayName = 'rxrecycler-adapter'
+
+    // Maven metadata
+    publishedGroupId = 'com.minimize.android'
+    libraryName = 'RxRecyclerAdapter'
+    // Save yourself a head ache, and set this equal to the name of the Android Studio library
+    // module. The artifact name needs to match the name of the library.
+    artifact = 'rxrecycler-adapter'
+
+    libraryDescription = 'A Rx based RecyclerView Adapter Library.'
+    libraryVersion = '0.0.1'
+
+    developerId = 'ahmedrizwan'
+    developerName = 'Ahmed Rizwan'
+    developerEmail = 'ahmedrizwan@outlook.com'
+
+
+}
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    dataBinding{
+        enabled = true
+    }
+
+}
+
+
+dependencies {
+    compile 'com.android.support:appcompat-v7:23.+'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    compile 'io.reactivex:rxandroid:1.0.1'
+    compile 'io.reactivex:rxjava:1.0.16'
+    compile 'com.android.support:support-annotations:23.+'
+    compile 'com.android.support:recyclerview-v7:23.+'
+}
+
+apply from: 'https://raw.githubusercontent.com/attwellBrian/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/attwellBrian/JCenter/master/bintrayv1.gradle'
