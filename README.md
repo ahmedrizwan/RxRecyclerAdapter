@@ -1,5 +1,5 @@
 # RxRecyclerAdapter
-A Rx based generic RecyclerView Adapter Library. 
+Rx based generic RecyclerView Adapter Library. 
 
 ## How does it work?
 The library uses Databinding to send back the bindable layout, data item and position from the Adapter. 
