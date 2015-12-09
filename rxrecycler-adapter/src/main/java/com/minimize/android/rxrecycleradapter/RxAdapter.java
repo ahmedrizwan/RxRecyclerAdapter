@@ -3,7 +3,6 @@ package com.minimize.android.rxrecycleradapter;
 import android.databinding.ViewDataBinding;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,11 +25,9 @@ public class RxAdapter<T, V extends ViewDataBinding> extends RecyclerView.Adapte
         mItem_layout = item_layout;
         mDataSet = dataSet;
         mPublishSubject = PublishSubject.create();
-        Log.e("Size", mDataSet.size() + "");
     }
 
     public rx.Observable<Item> asObservable(){
-
         return mPublishSubject.asObservable();
     }
 
@@ -44,8 +41,7 @@ public class RxAdapter<T, V extends ViewDataBinding> extends RecyclerView.Adapte
 
     @Override
     public void onBindViewHolder(final RecyclerViewHolder holder, final int position) {
-        Log.e("Publish", "Item " + position);
-        mPublishSubject.onNext(new Item((V) holder.mViewDataBinding, mDataSet.get(position)));
+        mPublishSubject.onNext(new Item((V) holder.mViewDataBinding, mDataSet.get(position), position));
     }
 
     @Override
@@ -74,13 +70,17 @@ public class RxAdapter<T, V extends ViewDataBinding> extends RecyclerView.Adapte
 
         private final V mViewDataBinding;
         private final T mItem;
+        private final int mPosition;
 
 
-        public Item(final V viewHolder, final T item) {
-
+        public Item(final V viewHolder, final T item, final int position) {
             mViewDataBinding = viewHolder;
-
             mItem = item;
+            mPosition = position;
+        }
+
+        public int getPosition() {
+            return mPosition;
         }
     }
 }

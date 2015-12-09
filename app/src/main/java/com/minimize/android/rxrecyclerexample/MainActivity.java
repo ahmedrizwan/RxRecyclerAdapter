@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void call(final RxAdapter<String, ItemLayoutBinding>.Item item) {
                         item.getViewDataBinding().textViewItem.setText(item.getItem());
+                        // item position = item.getPosition();
                     }
                 });
 
