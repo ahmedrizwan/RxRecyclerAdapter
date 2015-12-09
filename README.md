@@ -32,7 +32,7 @@ rxAdapter.asObservable()
             @Override
             public void call(final RxAdapter<String, ItemLayoutBinding>.ViewItem viewItem) {
                 // Bind the view items with data here...
-                viewItem.getViewDataBinding().textViewItem.setText(viewItem.getItem());
+                viewItem.getViewDataBinding().textView.setText(viewItem.getItem());
             }
         });
         
