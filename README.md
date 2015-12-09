@@ -42,6 +42,9 @@ recyclerView.setAdapter(rxAdapter);
 ```
 And that's it!
 
+<img src="https://raw.githubusercontent.com/ahmedrizwan/RxRecyclerAdapter/master/app/src/main/res/drawable/recycler_screenshot.png"  />
+
+
 ##Download 
 Repository available on jCenter
 
