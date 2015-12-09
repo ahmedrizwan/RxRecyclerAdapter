@@ -6,13 +6,13 @@ The library uses Databinding to send back the binded layout, item and position f
 
 ## How to use it? 
 #### Example!
-1. Enable Databinding by adding these lines to your build.gradle
+- Enable Databinding by adding these lines to your build.gradle
 ```Gradle
 dataBinding {
       enabled = true
 }
 ```
-2. Create RxAdapter (make sure your item_layout is bindable)
+- Create RxAdapter (make sure your item_layout is bindable)
 ```java
 // a list of data to be displayed in recyclerView...
 List<String> myList = new ArrayList<>();
@@ -24,7 +24,7 @@ myList.add("Example");
 RxAdapter<String, ItemLayoutBinding> rxAdapter = new RxAdapter<>(R.layout.item_layout, myList);
 // Note: ItemLayoutBinding is generated from item_layout.xml by the Databinding Library
 ```
-3. Call asObservable on the adapter and subscribe
+- Call asObservable on the adapter and subscribe
 ```java
 rxAdapter.asObservable()
         .observeOn(AndroidSchedulers.mainThread())
