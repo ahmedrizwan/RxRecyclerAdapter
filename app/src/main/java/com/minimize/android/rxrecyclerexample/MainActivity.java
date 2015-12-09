@@ -20,20 +20,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         ActivityMainBinding mActivityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         List<String> myList = new ArrayList<>();
-        myList.add("Hello");
-        myList.add("Rx");
-        myList.add("Example");
+        for(int i=0;i<15;i++){
+            myList.add("Rx"+ new String(new char[i]).replace("\0", "!"));
+        }
 
         RxAdapter<String, ItemLayoutBinding> rxAdapter = new RxAdapter<>(R.layout.item_layout, myList);
         rxAdapter.asObservable()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxAdapter<String, ItemLayoutBinding>.Item>() {
+                .subscribe(new Action1<RxAdapter<String, ItemLayoutBinding>.ViewItem>() {
                     @Override
-                    public void call(final RxAdapter<String, ItemLayoutBinding>.Item item) {
-                        item.getViewDataBinding().textViewItem.setText(item.getItem());
+                    public void call(final RxAdapter<String, ItemLayoutBinding>.ViewItem viewItem) {
+                        viewItem.getViewDataBinding().textViewItem.setText(viewItem.getItem());
                         // item position = item.getPosition();
                     }
                 });

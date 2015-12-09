@@ -19,7 +19,7 @@ public class RxAdapter<T, V extends ViewDataBinding> extends RecyclerView.Adapte
     private int mItem_layout;
     private List<T> mDataSet;
 
-    private PublishSubject<Item> mPublishSubject;
+    private PublishSubject<ViewItem> mPublishSubject;
 
     public RxAdapter(@LayoutRes final int item_layout, final List<T> dataSet) {
         mItem_layout = item_layout;
@@ -27,7 +27,7 @@ public class RxAdapter<T, V extends ViewDataBinding> extends RecyclerView.Adapte
         mPublishSubject = PublishSubject.create();
     }
 
-    public rx.Observable<Item> asObservable(){
+    public rx.Observable<ViewItem> asObservable(){
         return mPublishSubject.asObservable();
     }
 
@@ -41,7 +41,7 @@ public class RxAdapter<T, V extends ViewDataBinding> extends RecyclerView.Adapte
 
     @Override
     public void onBindViewHolder(final RecyclerViewHolder holder, final int position) {
-        mPublishSubject.onNext(new Item((V) holder.mViewDataBinding, mDataSet.get(position), position));
+        mPublishSubject.onNext(new ViewItem((V) holder.mViewDataBinding, mDataSet.get(position), position));
     }
 
     @Override
@@ -58,7 +58,7 @@ public class RxAdapter<T, V extends ViewDataBinding> extends RecyclerView.Adapte
         return mDataSet;
     }
 
-    public class Item {
+    public class ViewItem {
 
         public V getViewDataBinding() {
             return mViewDataBinding;
@@ -73,7 +73,7 @@ public class RxAdapter<T, V extends ViewDataBinding> extends RecyclerView.Adapte
         private final int mPosition;
 
 
-        public Item(final V viewHolder, final T item, final int position) {
+        public ViewItem(final V viewHolder, final T item, final int position) {
             mViewDataBinding = viewHolder;
             mItem = item;
             mPosition = position;

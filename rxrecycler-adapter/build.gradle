@@ -14,12 +14,11 @@ ext {
     artifact = 'rxrecycler-adapter'
 
     libraryDescription = 'A Rx based RecyclerView Adapter Library.'
-    libraryVersion = '0.0.1'
+    libraryVersion = '0.0.3'
 
     developerId = 'ahmedrizwan'
     developerName = 'Ahmed Rizwan'
     developerEmail = 'ahmedrizwan@outlook.com'
-
 
 }
 
