@@ -1,8 +1,8 @@
 # RxRecyclerAdapter
-A Rx based generic RecyclerView Adapter Library. 
+Rx based generic RecyclerView Adapter Library. 
 
 ## How does it work?
-The library uses Databinding to send back the bindable layout, data item and position from the Adapter. 
+You subscribe to the RxAdapter instance and it sends back the bindable layout, data item and position from the Adapter. This allows you to compose your items as they arrive! This also means that no more multiple RecyclerView.Adapter implementation-classes in your project!
 
 ## How to use it? 
 #### Example!
@@ -28,19 +28,22 @@ RxAdapter<String, ItemLayoutBinding> rxAdapter = new RxAdapter<>(R.layout.item_l
 ```java
 rxAdapter.asObservable()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Action1<RxAdapter<String, ItemLayoutBinding>.ViewItem>() {
-            @Override
-            public void call(final RxAdapter<String, ItemLayoutBinding>.ViewItem viewItem) {
+        .subscribe( viewItem -> {
                 // Bind the view items with data here...
-                viewItem.getViewDataBinding().textViewItem.setText(viewItem.getItem());
-            }
-        });
+                final ItemLayoutBinding binding = viewItem.getViewDataBinding();
+                final String text = viewItem.getItem();
+                
+                binding.textView.setText(text);
+            });
         
 // set recyclerView layout manager and adapter 
 recyclerView.setLayoutManager(new LinearLayoutManager(this));
 recyclerView.setAdapter(rxAdapter);
 ```
 And that's it!
+
+<img src="https://raw.githubusercontent.com/ahmedrizwan/RxRecyclerAdapter/master/app/src/main/res/drawable/recycler_adapter.png" width=400px  />
+
 
 ##Download 
 Repository available on jCenter
