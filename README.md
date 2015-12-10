@@ -28,13 +28,13 @@ RxAdapter<String, ItemLayoutBinding> rxAdapter = new RxAdapter<>(R.layout.item_l
 ```java
 rxAdapter.asObservable()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Action1<RxAdapter<String, ItemLayoutBinding>.ViewItem>() {
-            @Override
-            public void call(final RxAdapter<String, ItemLayoutBinding>.ViewItem viewItem) {
+        .subscribe( viewItem -> {
                 // Bind the view items with data here...
-                viewItem.getViewDataBinding().textView.setText(viewItem.getItem());
-            }
-        });
+                final ItemLayoutBinding binding = viewItem.getViewDataBinding();
+                final String text = viewItem.getItem();
+                
+                binding.textView.setText(text);
+            });
         
 // set recyclerView layout manager and adapter 
 recyclerView.setLayoutManager(new LinearLayoutManager(this));
