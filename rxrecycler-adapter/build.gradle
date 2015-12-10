@@ -13,8 +13,8 @@ ext {
     // module. The artifact name needs to match the name of the library.
     artifact = 'rxrecycler-adapter'
 
-    libraryDescription = 'A Rx based RecyclerView Adapter Library.'
-    libraryVersion = '0.0.3'
+    libraryDescription = 'Rx based generic RecyclerView Adapter Library.'
+    libraryVersion = '0.1'
 
     developerId = 'ahmedrizwan'
     developerName = 'Ahmed Rizwan'
@@ -50,8 +50,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.+'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'io.reactivex:rxandroid:1.0.1'
-    compile 'io.reactivex:rxjava:1.0.16'
+    compile 'io.reactivex:rxandroid:1.1.0'
+    compile 'io.reactivex:rxjava:1.1.0'
     compile 'com.android.support:support-annotations:23.+'
     compile 'com.android.support:recyclerview-v7:23.+'
 }
