@@ -44,12 +44,47 @@ And that's it!
 
 <img src="https://raw.githubusercontent.com/ahmedrizwan/RxRecyclerAdapter/master/app/src/main/res/drawable/recycler_adapter.png" width=400px  />
 
-
+#### Adapter for multiple View Types
+If multiple view types are required for your recyclerView, then use RxAdapterForTypes. For example, if we have two types HEADER and ITEM then the coding steps will be :-
+- Enable Databinding
+- Create a list of ViewHolderInfo
+```java 
+List<ViewHolderInfo> viewHolderInfoList = new ArrayList<>();
+viewHolderInfoList.add(new ViewHolderInfo(R.layout.item_layout, TYPE_ITEM)); //TYPE_ITEM = 1
+viewHolderInfoList.add(new ViewHolderInfo(R.layout.item_header_layout, TYPE_HEADER)); //TYPE_HEADER = 0
+```
+- Create RxAdapterForTypes by passing in dataSet, viewHolderInfoList and implementation for getViewItemType
+```java
+RxAdapterForTypes<String> rxAdapter = new RxAdapterForTypes<>(dataSet, viewHolderInfoList, new OnGetItemViewType() {
+            @Override
+            public int getItemViewType(final int position) {
+                if (position % 2 == 0) //headers are at even pos
+                    return TYPE_HEADER;
+                return TYPE_ITEM;
+            }
+        });
+```
+- Call asObservable and subscribe
+```java
+rxAdapter.asObservable()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(viewItem -> {
+            //Check instance type and bind!
+            final ViewDataBinding binding = viewItem.getViewDataBinding();
+            if (binding instanceof ItemLayoutBinding) {
+                final ItemLayoutBinding itemBinding = (ItemLayoutBinding) binding;
+                itemBinding.textViewItem.setText("ITEM: " + viewItem.getItem());
+            } else if (binding instanceof ItemHeaderLayoutBinding) {
+                final ItemHeaderLayoutBinding headerBinding = (ItemHeaderLayoutBinding) binding;
+                headerBinding.textViewHeader.setText("HEADER: " + viewItem.getItem());
+            }
+        });
+```
 ##Download 
 Repository available on jCenter
 
 ```Gradle
-compile 'com.minimize.android:rxrecycler-adapter:0.0.3'
+compile 'com.minimize.android:rxrecycler-adapter:0.1'
 ```
 *If the dependency fails to resolve, add this to your project repositories*
 ```Gradle
