@@ -27,7 +27,6 @@ RxAdapter<String, ItemLayoutBinding> rxAdapter = new RxAdapter<>(R.layout.item_l
 - Call asObservable on the adapter and subscribe
 ```java
 rxAdapter.asObservable()
-        .observeOn(AndroidSchedulers.mainThread())
         .subscribe( viewItem -> {
                 // Bind the view items with data here...
                 final ItemLayoutBinding binding = viewItem.getViewDataBinding();
@@ -67,7 +66,6 @@ RxAdapterForTypes<String> rxAdapter = new RxAdapterForTypes<>(dataSet, viewHolde
 - Call asObservable and subscribe
 ```java
 rxAdapter.asObservable()
-        .observeOn(AndroidSchedulers.mainThread())
         .subscribe(viewItem -> {
             //Check instance type and bind!
             final ViewDataBinding binding = viewItem.getViewDataBinding();
