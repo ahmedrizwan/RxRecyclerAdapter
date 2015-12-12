@@ -27,10 +27,10 @@ RxAdapter<String, ItemLayoutBinding> rxAdapter = new RxAdapter<>(R.layout.item_l
 - Call asObservable on the adapter and subscribe
 ```java
 rxAdapter.asObservable()
-        .subscribe( viewItem -> {
+        .subscribe( viewHolder -> {
                 // Bind the view items with data here...
-                final ItemLayoutBinding binding = viewItem.getViewDataBinding();
-                final String text = viewItem.getItem();
+                final ItemLayoutBinding binding = viewHolder.getViewDataBinding();
+                final String text = viewHolder.getItem();
                 
                 binding.textView.setText(text);
             });
@@ -66,15 +66,15 @@ RxAdapterForTypes<String> rxAdapter = new RxAdapterForTypes<>(dataSet, viewHolde
 - Call asObservable and subscribe
 ```java
 rxAdapter.asObservable()
-        .subscribe(viewItem -> {
+        .subscribe(viewHolder -> {
             //Check instance type and bind!
-            final ViewDataBinding binding = viewItem.getViewDataBinding();
+            final ViewDataBinding binding = viewHolder.getViewDataBinding();
             if (binding instanceof ItemLayoutBinding) {
                 final ItemLayoutBinding itemBinding = (ItemLayoutBinding) binding;
-                itemBinding.textViewItem.setText("ITEM: " + viewItem.getItem());
+                itemBinding.textViewItem.setText("ITEM: " + viewHolder.getItem());
             } else if (binding instanceof ItemHeaderLayoutBinding) {
                 final ItemHeaderLayoutBinding headerBinding = (ItemHeaderLayoutBinding) binding;
-                headerBinding.textViewHeader.setText("HEADER: " + viewItem.getItem());
+                headerBinding.textViewHeader.setText("HEADER: " + viewHolder.getItem());
             }
         });
 ```
@@ -82,7 +82,7 @@ rxAdapter.asObservable()
 Repository available on jCenter
 
 ```Gradle
-compile 'com.minimize.android:rxrecycler-adapter:0.1'
+compile 'com.minimize.android:rxrecycler-adapter:1.0'
 ```
 *If the dependency fails to resolve, add this to your project repositories*
 ```Gradle
