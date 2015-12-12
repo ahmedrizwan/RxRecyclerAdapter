@@ -52,15 +52,15 @@ public class MainActivity extends AppCompatActivity {
         //Call asObservable and subscribe
         rxAdapter.asObservable()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(viewItem -> {
+                .subscribe(viewHolder -> {
                     //Check instance type and bind!
-                    final ViewDataBinding binding = viewItem.getViewDataBinding();
+                    final ViewDataBinding binding = viewHolder.getViewDataBinding();
                     if (binding instanceof ItemLayoutBinding) {
                         final ItemLayoutBinding itemBinding = (ItemLayoutBinding) binding;
-                        itemBinding.textViewItem.setText("ITEM: " + viewItem.getItem());
+                        itemBinding.textViewItem.setText("ITEM: " + viewHolder.getItem());
                     } else if (binding instanceof ItemHeaderLayoutBinding) {
                         final ItemHeaderLayoutBinding headerBinding = (ItemHeaderLayoutBinding) binding;
-                        headerBinding.textViewHeader.setText("HEADER: " + viewItem.getItem());
+                        headerBinding.textViewHeader.setText("HEADER: " + viewHolder.getItem());
                     }
                 });
 
@@ -70,12 +70,13 @@ public class MainActivity extends AppCompatActivity {
         RxAdapter<String, ItemLayoutBinding> rxAdapterSimple = new RxAdapter<>(R.layout.item_layout, dataSet);
         rxAdapterSimple.asObservable()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(simpleViewItem -> {
-                    ItemLayoutBinding binding = simpleViewItem.getViewDataBinding();
-                    binding.textViewItem.setText(simpleViewItem.getItem());
+                .subscribe(viewHolder->{
+                    viewHolder.getViewDataBinding().textViewItem.setText(viewHolder.getItem());
                 });
+
+        
         //Set adapter
         mActivityMainBinding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mActivityMainBinding.recyclerView.setAdapter(rxAdapterSimple);
+        mActivityMainBinding.recyclerView.setAdapter(rxAdapter);
     }
 }

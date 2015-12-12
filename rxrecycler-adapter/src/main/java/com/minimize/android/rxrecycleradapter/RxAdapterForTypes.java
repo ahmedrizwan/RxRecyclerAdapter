@@ -12,12 +12,12 @@ import rx.subjects.PublishSubject;
 /**
  * Created by ahmedrizwan on 10/12/2015.
  */
-public class RxAdapterForTypes<T> extends RecyclerView.Adapter<RecyclerViewHolder> {
+public class RxAdapterForTypes<T> extends RecyclerView.Adapter<TypesViewHolder<T>> {
 
     private List<T> mDataSet;
     private List<ViewHolderInfo> mViewHolderInfoList;
     private OnGetItemViewType mViewTypeCallback;
-    private PublishSubject<ViewItem> mPublishSubject;
+    private PublishSubject<TypesViewHolder<T>> mPublishSubject;
 
     public RxAdapterForTypes(final List<T> dataSet, List<ViewHolderInfo> viewHolderInfoList, OnGetItemViewType viewTypeCallback) {
         mDataSet = dataSet;
@@ -26,26 +26,27 @@ public class RxAdapterForTypes<T> extends RecyclerView.Adapter<RecyclerViewHolde
         mPublishSubject = PublishSubject.create();
     }
 
-    public rx.Observable<ViewItem> asObservable(){
+    public rx.Observable<TypesViewHolder<T>> asObservable(){
         return mPublishSubject.asObservable();
     }
 
     @Override
-    public RecyclerViewHolder onCreateViewHolder(final ViewGroup parent,
-                                                 final int viewType) {
+    public TypesViewHolder<T> onCreateViewHolder(final ViewGroup parent,
+                                               final int viewType) {
         for (ViewHolderInfo viewHolderInfo : mViewHolderInfoList) {
             if(viewType == viewHolderInfo.getType()){
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(viewHolderInfo.getLayoutRes(), parent, false);
-                return new RecyclerViewHolder(view);
+                return new TypesViewHolder<>(view);
             }
         }
         throw new RuntimeException("View Type in RxAdapter not found!");
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerViewHolder holder, final int position) {
-        mPublishSubject.onNext(new ViewItem<>(holder.mViewDataBinding, mDataSet.get(position), position));
+    public void onBindViewHolder(final TypesViewHolder<T> holder, final int position) {
+        holder.setItem(mDataSet.get(position));
+        mPublishSubject.onNext(holder);
     }
 
     @Override

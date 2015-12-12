@@ -14,12 +14,12 @@ import rx.subjects.PublishSubject;
 /**
  * Created by ahmedrizwan on 09/12/2015.
  */
-public class RxAdapter<T, V extends ViewDataBinding> extends RecyclerView.Adapter<RecyclerViewHolder> {
+public class RxAdapter<T, V extends ViewDataBinding> extends RecyclerView.Adapter<SimpleViewHolder<T, V>> {
 
     private int mItem_layout;
     private List<T> mDataSet;
 
-    private PublishSubject<SimpleViewItem> mPublishSubject;
+    private PublishSubject<SimpleViewHolder<T, V>> mPublishSubject;
 
     public RxAdapter(@LayoutRes final int item_layout, final List<T> dataSet) {
         mItem_layout = item_layout;
@@ -27,21 +27,22 @@ public class RxAdapter<T, V extends ViewDataBinding> extends RecyclerView.Adapte
         mPublishSubject = PublishSubject.create();
     }
 
-    public rx.Observable<SimpleViewItem> asObservable(){
+    public rx.Observable<SimpleViewHolder<T, V>> asObservable() {
         return mPublishSubject.asObservable();
     }
 
     @Override
-    public RecyclerViewHolder onCreateViewHolder(final ViewGroup parent,
-                                                 final int viewType) {
+    public SimpleViewHolder<T, V> onCreateViewHolder(final ViewGroup parent,
+                                                     final int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(mItem_layout, parent, false);
-        return new RecyclerViewHolder(view);
+        return new SimpleViewHolder<T, V>(view);
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerViewHolder holder, final int position) {
-        mPublishSubject.onNext(new SimpleViewItem((V) holder.mViewDataBinding, mDataSet.get(position), position));
+    public void onBindViewHolder(final SimpleViewHolder<T, V> holder, final int position) {
+        holder.setItem(mDataSet.get(position));
+        mPublishSubject.onNext(holder);
     }
 
     @Override
@@ -58,34 +59,9 @@ public class RxAdapter<T, V extends ViewDataBinding> extends RecyclerView.Adapte
         return mDataSet;
     }
 
-    public void updateDataSet(List<T> dataSet){
+    public void updateDataSet(List<T> dataSet) {
         mDataSet = dataSet;
         notifyDataSetChanged();
     }
 
-    public class SimpleViewItem {
-
-        public V getViewDataBinding() {
-            return mViewDataBinding;
-        }
-
-        public T getItem() {
-            return mItem;
-        }
-
-        private final V mViewDataBinding;
-        private final T mItem;
-        private final int mPosition;
-
-
-        public SimpleViewItem(final V viewHolder, final T item, final int position) {
-            mViewDataBinding = viewHolder;
-            mItem = item;
-            mPosition = position;
-        }
-
-        public int getPosition() {
-            return mPosition;
-        }
-    }
 }
