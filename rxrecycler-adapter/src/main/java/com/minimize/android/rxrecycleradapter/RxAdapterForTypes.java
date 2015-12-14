@@ -18,6 +18,7 @@ public class RxAdapterForTypes<T> extends RecyclerView.Adapter<TypesViewHolder<T
     private List<ViewHolderInfo> mViewHolderInfoList;
     private OnGetItemViewType mViewTypeCallback;
     private PublishSubject<TypesViewHolder<T>> mPublishSubject;
+    private OnViewHolderInflated mOnViewHolderInflate;
 
     public RxAdapterForTypes(final List<T> dataSet, List<ViewHolderInfo> viewHolderInfoList, OnGetItemViewType viewTypeCallback) {
         mDataSet = dataSet;
@@ -26,17 +27,23 @@ public class RxAdapterForTypes<T> extends RecyclerView.Adapter<TypesViewHolder<T
         mPublishSubject = PublishSubject.create();
     }
 
-    public rx.Observable<TypesViewHolder<T>> asObservable(){
+    public void setOnViewHolderInflate(OnViewHolderInflated onViewHolderInflate) {
+        mOnViewHolderInflate = onViewHolderInflate;
+    }
+
+    public rx.Observable<TypesViewHolder<T>> asObservable() {
         return mPublishSubject.asObservable();
     }
 
     @Override
     public TypesViewHolder<T> onCreateViewHolder(final ViewGroup parent,
-                                               final int viewType) {
+                                                 final int viewType) {
         for (ViewHolderInfo viewHolderInfo : mViewHolderInfoList) {
-            if(viewType == viewHolderInfo.getType()){
+            if (viewType == viewHolderInfo.getType()) {
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(viewHolderInfo.getLayoutRes(), parent, false);
+                if (mOnViewHolderInflate != null)
+                    mOnViewHolderInflate.onInflated(view,parent, viewType);
                 return new TypesViewHolder<>(view);
             }
         }
@@ -63,13 +70,9 @@ public class RxAdapterForTypes<T> extends RecyclerView.Adapter<TypesViewHolder<T
         return mDataSet;
     }
 
-    public void updateDataSet(List<T> dataSet){
+    public void updateDataSet(List<T> dataSet) {
         mDataSet = dataSet;
         notifyDataSetChanged();
     }
-
-
-
-
 
 }

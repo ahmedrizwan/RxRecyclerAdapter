@@ -52,15 +52,15 @@ public class MainActivity extends AppCompatActivity {
         //Call asObservable and subscribe
         rxAdapter.asObservable()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(viewHolder -> {
+                .subscribe(vH -> {
                     //Check instance type and bind!
-                    final ViewDataBinding binding = viewHolder.getViewDataBinding();
-                    if (binding instanceof ItemLayoutBinding) {
-                        final ItemLayoutBinding itemBinding = (ItemLayoutBinding) binding;
-                        itemBinding.textViewItem.setText("ITEM: " + viewHolder.getItem());
-                    } else if (binding instanceof ItemHeaderLayoutBinding) {
-                        final ItemHeaderLayoutBinding headerBinding = (ItemHeaderLayoutBinding) binding;
-                        headerBinding.textViewHeader.setText("HEADER: " + viewHolder.getItem());
+                    final ViewDataBinding b = vH.getViewDataBinding();
+                    if (b instanceof ItemLayoutBinding) {
+                        final ItemLayoutBinding iB = (ItemLayoutBinding) b;
+                        iB.textViewItem.setText("ITEM: " + vH.getItem());
+                    } else if (b instanceof ItemHeaderLayoutBinding) {
+                        final ItemHeaderLayoutBinding hB = (ItemHeaderLayoutBinding) b;
+                        hB.textViewHeader.setText("HEADER: " + vH.getItem());
                     }
                 });
 
@@ -71,10 +71,21 @@ public class MainActivity extends AppCompatActivity {
         rxAdapterSimple.asObservable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(viewHolder->{
-                    viewHolder.getViewDataBinding().textViewItem.setText(viewHolder.getItem());
+                    ItemLayoutBinding binding = viewHolder.getViewDataBinding();
+                    String item = viewHolder.getItem();
+                    binding.textViewItem.setText(item);
                 });
+        //optional call to onViewHolderInflated
+//        rxAdapter.setOnViewHolderInflate(new OnViewHolderInflated() {
+//            @Override
+//            public void onInflated(final View view, final ViewGroup parent, final int viewType) {
+//                if(viewType == TYPE_ITEM)
+//                view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+//                        parent.getMeasuredHeight()));
+//            }
+//        });
 
-        
+
         //Set adapter
         mActivityMainBinding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         mActivityMainBinding.recyclerView.setAdapter(rxAdapter);

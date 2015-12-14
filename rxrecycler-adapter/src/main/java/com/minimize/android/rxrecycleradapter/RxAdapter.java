@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
+import rx.Observable;
 import rx.subjects.PublishSubject;
 
 /**
@@ -20,6 +21,7 @@ public class RxAdapter<T, V extends ViewDataBinding> extends RecyclerView.Adapte
     private List<T> mDataSet;
 
     private PublishSubject<SimpleViewHolder<T, V>> mPublishSubject;
+    private OnViewHolderInflated mOnViewHolderInflate;
 
     public RxAdapter(@LayoutRes final int item_layout, final List<T> dataSet) {
         mItem_layout = item_layout;
@@ -27,7 +29,12 @@ public class RxAdapter<T, V extends ViewDataBinding> extends RecyclerView.Adapte
         mPublishSubject = PublishSubject.create();
     }
 
-    public rx.Observable<SimpleViewHolder<T, V>> asObservable() {
+    public void setOnViewHolderInflate(OnViewHolderInflated onViewHolderInflate) {
+        mOnViewHolderInflate = onViewHolderInflate;
+    }
+
+
+    public Observable<SimpleViewHolder<T, V>> asObservable() {
         return mPublishSubject.asObservable();
     }
 
@@ -36,6 +43,8 @@ public class RxAdapter<T, V extends ViewDataBinding> extends RecyclerView.Adapte
                                                      final int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(mItem_layout, parent, false);
+        if (mOnViewHolderInflate != null)
+            mOnViewHolderInflate.onInflated(view, parent, viewType);
         return new SimpleViewHolder<T, V>(view);
     }
 
