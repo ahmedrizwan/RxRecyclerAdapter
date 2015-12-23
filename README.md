@@ -12,39 +12,40 @@ dataBinding {
       enabled = true
 }
 ```
-- Create RxAdapter (make sure your item_layout is bindable)
+- Create RxDataSource object (make sure your item_layout is bindable)
 ```java
-// a list of data to be displayed in recyclerView...
-List<String> myList = new ArrayList<>();
-myList.add("Hello");
-myList.add("Rx");
-myList.add("Example");
+//Dummy DataSet
+List<String> dataSet = new ArrayList<>();
+dataSet.add("Hello");
+dataSet.add("");
+dataSet.add("This");
+dataSet.add("is  An");
+dataSet.add("example");
+dataSet.add("of RX!");
 
-// create adapter by telling it what the data type and ViewDataBinding type is...
-RxAdapter<String, ItemLayoutBinding> rxAdapter = new RxAdapter<>(R.layout.item_layout, myList);
-// Note: ItemLayoutBinding is generated from item_layout.xml by the Databinding Library
+//RxDataSource
+//Note: ItemLayoutBinding is generated from item_layout.xml by the Databinding Library
+RxDataSource<String, ItemLayoutBinding> rxDataSource = new RxDataSource<>(R.layout.item_layout, dataSet);
 ```
-- Call asObservable on the adapter and subscribe
+- Compose and call getAdapter passing in your recyclerView and subscribe!
 ```java
-rxAdapter.asObservable()
-        .subscribe( viewHolder -> {
-                // Bind the view items with data here...
-                final ItemLayoutBinding binding = viewHolder.getViewDataBinding();
-                final String text = viewHolder.getItem();
-                
-                binding.textView.setText(text);
-            });
-        
-// set recyclerView layout manager and adapter 
-recyclerView.setLayoutManager(new LinearLayoutManager(this));
-recyclerView.setAdapter(rxAdapter);
+rxDataSource.map(String::toLowerCase)
+                .map(s -> s.replace(" ", ""))
+                .map(s -> s.toCharArray().length)
+                .repeat(10)
+                .getRxAdapter(recyclerView)
+                .subscribe(viewHolder -> {
+                    ItemLayoutBinding binding = viewHolder.getViewDataBinding();
+                    int item = viewHolder.getItem();
+                    binding.textViewItem.setText(item + "");
+                });
 ```
-And that's it!
+And that's it! Notice how it's showing numbers instead of the strings... That's magic!
 
 <img src="https://raw.githubusercontent.com/ahmedrizwan/RxRecyclerAdapter/master/app/src/main/res/drawable/recycler_adapter.png" width=400px  />
 
 #### Adapter for multiple View Types
-If multiple view types are required for your recyclerView, then use RxAdapterForTypes. For example, if we have two types HEADER and ITEM then the coding steps will be :-
+If multiple view types are required for your recyclerView, then use RxDataSourceForTypes. For example, if we have two types HEADER and ITEM then the coding steps will be :-
 - Enable Databinding
 - Create a list of ViewHolderInfo
 ```java 
@@ -52,9 +53,9 @@ List<ViewHolderInfo> viewHolderInfoList = new ArrayList<>();
 viewHolderInfoList.add(new ViewHolderInfo(R.layout.item_layout, TYPE_ITEM)); //TYPE_ITEM = 1
 viewHolderInfoList.add(new ViewHolderInfo(R.layout.item_header_layout, TYPE_HEADER)); //TYPE_HEADER = 0
 ```
-- Create RxAdapterForTypes by passing in dataSet, viewHolderInfoList and implementation for getViewItemType
+- Create RxDataSourceForTypes by passing in dataSet, viewHolderInfoList and implementation for getViewItemType
 ```java
-RxAdapterForTypes<String> rxAdapter = new RxAdapterForTypes<>(dataSet, viewHolderInfoList, new OnGetItemViewType() {
+RxDataSourceForTypes<String> rxDataSourceForTypes = new RxDataSourceForTypes<>(dataSet, viewHolderInfoList, new OnGetItemViewType() {
             @Override
             public int getItemViewType(final int position) {
                 if (position % 2 == 0) //headers are at even pos
@@ -63,26 +64,33 @@ RxAdapterForTypes<String> rxAdapter = new RxAdapterForTypes<>(dataSet, viewHolde
             }
         });
 ```
-- Call asObservable and subscribe
+- Compose and call getAdapter... Subscribe!
 ```java
-rxAdapter.asObservable()
-        .subscribe(viewHolder -> {
-            //Check instance type and bind!
-            final ViewDataBinding binding = viewHolder.getViewDataBinding();
-            if (binding instanceof ItemLayoutBinding) {
-                final ItemLayoutBinding itemBinding = (ItemLayoutBinding) binding;
-                itemBinding.textViewItem.setText("ITEM: " + viewHolder.getItem());
-            } else if (binding instanceof ItemHeaderLayoutBinding) {
-                final ItemHeaderLayoutBinding headerBinding = (ItemHeaderLayoutBinding) binding;
-                headerBinding.textViewHeader.setText("HEADER: " + viewHolder.getItem());
-            }
-        });
+rxDataSourceForTypes.repeat(2)
+                .map(String::toUpperCase)
+                .filter(s -> !s.isEmpty())
+                .getRxAdapter(mActivityMainBinding.recyclerView)
+                .subscribe(
+                        vH -> {
+                            //Check instance type and bind!
+                            final ViewDataBinding b = vH.getViewDataBinding();
+                            if (b instanceof ItemLayoutBinding) {
+                                final ItemLayoutBinding iB = (ItemLayoutBinding) b;
+                                iB.textViewItem.setText("ITEM: " + vH.getItem());
+                            } else if (b instanceof ItemHeaderLayoutBinding) {
+                                final ItemHeaderLayoutBinding hB = (ItemHeaderLayoutBinding) b;
+                                hB.textViewHeader.setText("HEADER: " + vH.getItem());
+                            }
+                        });
 ```
+And the output would look like
+
+<img src="https://raw.githubusercontent.com/ahmedrizwan/RxRecyclerAdapter/master/app/src/main/res/drawable/recycler_adapter_types.png" width=400px  />
 ##Download 
 Repository available on jCenter
 
 ```Gradle
-compile 'com.minimize.android:rxrecycler-adapter:1.0.1'
+compile 'com.minimize.android:rxrecycler-adapter:1.1.0'
 ```
 *If the dependency fails to resolve, add this to your project repositories*
 ```Gradle
