@@ -40,9 +40,11 @@ rxDataSource.map(String::toLowerCase)
                     binding.textViewItem.setText(item + "");
                 });
 ```
-And that's it! Notice how it's showing numbers instead of the strings... That's magic!
+
+The output :
 
 <img src="https://raw.githubusercontent.com/ahmedrizwan/RxRecyclerAdapter/master/app/src/main/res/drawable/recycler_adapter.png" width=400px  />
+
 
 #### Adapter for multiple View Types
 If multiple view types are required for your recyclerView, then use RxDataSourceForTypes. For example, if we have two types HEADER and ITEM then the coding steps will be :-
