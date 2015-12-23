@@ -15,15 +15,15 @@ import rx.subjects.PublishSubject;
 /**
  * Created by ahmedrizwan on 09/12/2015.
  */
-public class RxAdapter<T, V extends ViewDataBinding> extends RecyclerView.Adapter<SimpleViewHolder<T, V>> {
+public class RxAdapter<DataType, LayoutBinding extends ViewDataBinding> extends RecyclerView.Adapter<SimpleViewHolder<DataType, LayoutBinding>> {
 
     private int mItem_layout;
-    private List<T> mDataSet;
+    private List<DataType> mDataSet;
 
-    private PublishSubject<SimpleViewHolder<T, V>> mPublishSubject;
+    private PublishSubject<SimpleViewHolder<DataType, LayoutBinding>> mPublishSubject;
     private OnViewHolderInflated mOnViewHolderInflate;
 
-    public RxAdapter(@LayoutRes final int item_layout, final List<T> dataSet) {
+    public RxAdapter(@LayoutRes final int item_layout, final List<DataType> dataSet) {
         mItem_layout = item_layout;
         mDataSet = dataSet;
         mPublishSubject = PublishSubject.create();
@@ -34,22 +34,22 @@ public class RxAdapter<T, V extends ViewDataBinding> extends RecyclerView.Adapte
     }
 
 
-    public Observable<SimpleViewHolder<T, V>> asObservable() {
+    public Observable<SimpleViewHolder<DataType, LayoutBinding>> asObservable() {
         return mPublishSubject.asObservable();
     }
 
     @Override
-    public SimpleViewHolder<T, V> onCreateViewHolder(final ViewGroup parent,
-                                                     final int viewType) {
+    public SimpleViewHolder<DataType, LayoutBinding> onCreateViewHolder(final ViewGroup parent,
+                                                                        final int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(mItem_layout, parent, false);
         if (mOnViewHolderInflate != null)
             mOnViewHolderInflate.onInflated(view, parent, viewType);
-        return new SimpleViewHolder<T, V>(view);
+        return new SimpleViewHolder<DataType, LayoutBinding>(view);
     }
 
     @Override
-    public void onBindViewHolder(final SimpleViewHolder<T, V> holder, final int position) {
+    public void onBindViewHolder(final SimpleViewHolder<DataType, LayoutBinding> holder, final int position) {
         holder.setItem(mDataSet.get(position));
         mPublishSubject.onNext(holder);
     }
@@ -64,11 +64,11 @@ public class RxAdapter<T, V extends ViewDataBinding> extends RecyclerView.Adapte
         return super.getItemViewType(position);
     }
 
-    public List<T> getDataSet() {
+    public List<DataType> getDataSet() {
         return mDataSet;
     }
 
-    public void updateDataSet(List<T> dataSet) {
+    public void updateDataSet(List<DataType> dataSet) {
         mDataSet = dataSet;
         notifyDataSetChanged();
     }
