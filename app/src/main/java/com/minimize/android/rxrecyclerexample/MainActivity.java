@@ -68,15 +68,14 @@ public class MainActivity extends AppCompatActivity {
         mActivityMainBinding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         RxDataSource<String, ItemLayoutBinding> rxDataSource = new RxDataSource<>(R.layout.item_layout, dataSet);
-        rxDataSource.repeat(10)
-                .map(String::toLowerCase)
+        rxDataSource.map(String::toLowerCase)
                 .map(s -> s.replace(" ", ""))
-                .filter(s -> !s.isEmpty())
-                .take(5)
+                .map(s -> s.toCharArray().length)
+                .repeat(10)
                 .getRxAdapter(mActivityMainBinding.recyclerView)
                 .subscribe(viewHolder -> {
                     ItemLayoutBinding binding = viewHolder.getViewDataBinding();
-                    String item = viewHolder.getItem();
+                    int item = viewHolder.getItem();
                     binding.textViewItem.setText(item + "");
                 });
 
@@ -88,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
                 return TYPE_ITEM;
             }
         });
+
         rxDataSourceForTypes.repeat(2)
                 .map(String::toUpperCase)
                 .filter(s -> !s.isEmpty())
