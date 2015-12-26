@@ -49,8 +49,7 @@ public class RxDataSource<DataType> {
    *
    * @return RxAdapter Instance
    */
-  @Nullable
-  public RxAdapter getRxAdapter() {
+  @Nullable public RxAdapter getRxAdapter() {
     return mRxAdapter;
   }
 
@@ -60,8 +59,7 @@ public class RxDataSource<DataType> {
    *
    * @return RxAdapter Instance
    */
-  @Nullable
-  public RxAdapterForTypes<DataType> getRxAdapterForTypes() {
+  @Nullable public RxAdapterForTypes<DataType> getRxAdapterForTypes() {
     return mRxAdapterForTypes;
   }
 
@@ -81,6 +79,26 @@ public class RxDataSource<DataType> {
     mRxAdapterForTypes = new RxAdapterForTypes<>(mDataSet, viewHolderInfoList, viewTypeCallback);
     recyclerView.setAdapter(mRxAdapterForTypes);
     return mRxAdapterForTypes.asObservable();
+  }
+
+  /***
+   * For setting base dataSet
+   */
+  public RxDataSource<DataType> updateDataSet(List<DataType> dataSet) {
+    mDataSet = dataSet;
+    return this;
+  }
+
+  /***
+   * For updating Adapter
+   */
+  public void updateAdapter() {
+    if (mRxAdapter != null) {
+      //update the update
+      mRxAdapter.updateDataSet(mDataSet);
+    } else if (mRxAdapterForTypes != null) {
+      mRxAdapterForTypes.updateDataSet(mDataSet);
+    }
   }
 
   public RxDataSource<DataType> map(Func1<? super DataType, ? extends DataType> func) {
@@ -285,14 +303,5 @@ public class RxDataSource<DataType> {
   public final RxDataSource<DataType> takeLast(final int count) {
     mDataSet = Observable.from(mDataSet).takeLast(count).toList().toBlocking().first();
     return this;
-  }
-
-  public void update() {
-    if (mRxAdapter != null) {
-      //update the update
-      mRxAdapter.updateDataSet(mDataSet);
-    } else if (mRxAdapterForTypes != null) {
-      mRxAdapterForTypes.updateDataSet(mDataSet);
-    }
   }
 }

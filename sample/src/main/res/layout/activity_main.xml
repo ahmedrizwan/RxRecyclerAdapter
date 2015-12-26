@@ -8,9 +8,19 @@
         android:layout_height="match_parent"
         >
 
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Search Items"
+            android:layout_margin="16dip"
+            android:visibility="gone"
+            android:id="@+id/searchEditText"/>
+
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@id/searchEditText"
+            android:padding="16dip"
             android:id="@+id/recyclerView"
         />
     </RelativeLayout>
