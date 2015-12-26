@@ -5,6 +5,7 @@ import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.minimize.android.rxrecycleradapter.OnGetItemViewType;
 import com.minimize.android.rxrecycleradapter.RxDataSource;
 import com.minimize.android.rxrecycleradapter.ViewHolderInfo;
@@ -17,7 +18,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
   final int TYPE_HEADER = 0;
   final int TYPE_ITEM = 1;
-
+  List<String> dataSet;
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     ActivityMainBinding mActivityMainBinding =
@@ -29,11 +30,10 @@ public class MainActivity extends AppCompatActivity {
     viewHolderInfoList.add(new ViewHolderInfo(R.layout.item_header_layout, TYPE_HEADER));
 
     //Dummy DataSet
-    List<String> dataSet = new ArrayList<>();
-    dataSet.add("Hello");
-    dataSet.add("");
+    dataSet = new ArrayList<>();
     dataSet.add("This");
-    dataSet.add("is  An");
+    dataSet.add("is");
+    dataSet.add("an");
     dataSet.add("example");
     dataSet.add("of RX!");
 
@@ -41,14 +41,21 @@ public class MainActivity extends AppCompatActivity {
     mActivityMainBinding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
     RxDataSource<String> rxDataSource = new RxDataSource<>(dataSet);
-    rxDataSource.map(String::toLowerCase).<ItemLayoutBinding>bindRecyclerView(
-        mActivityMainBinding.recyclerView, R.layout.item_layout).subscribe(viewHolder -> {
-      ItemLayoutBinding viewDataBinding = viewHolder.getViewDataBinding();
+    rxDataSource.map(String::toLowerCase)
+        .repeat(10)
+        .<ItemLayoutBinding>bindRecyclerView(mActivityMainBinding.recyclerView,
+        R.layout.item_layout).subscribe(viewHolder -> {
+      ItemLayoutBinding b = viewHolder.getViewDataBinding();
       String item = viewHolder.getItem();
-      viewDataBinding.textViewItem.setText(item);
+      b.textViewItem.setText(String.valueOf(item));
     });
+    dataSet = rxDataSource.getRxAdapter().getDataSet();
 
-    rxDataSource.filter(s -> s.length() > 0).map(s -> s.toCharArray().length + "").update();
+    RxTextView.afterTextChangeEvents(mActivityMainBinding.searchEditText).subscribe(event -> {
+      rxDataSource.updateDataSet(dataSet) //base items should remain the same
+          .filter(s -> s.contains(event.view().getText()))
+          .updateAdapter();
+    });
 
     rxDataSource.bindRecyclerView(mActivityMainBinding.recyclerView, viewHolderInfoList,
         new OnGetItemViewType() {
@@ -71,6 +78,6 @@ public class MainActivity extends AppCompatActivity {
       }
     });
 
-    rxDataSource.filter(s -> s.length() > 0).map(String::toUpperCase).update();
+    rxDataSource.filter(s -> s.length() > 0).map(String::toUpperCase).updateAdapter();
   }
 }
