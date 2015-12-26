@@ -56,7 +56,7 @@ List<ViewHolderInfo> viewHolderInfoList = new ArrayList<>();
 viewHolderInfoList.add(new ViewHolderInfo(R.layout.item_layout, TYPE_ITEM)); //TYPE_ITEM = 1
 viewHolderInfoList.add(new ViewHolderInfo(R.layout.item_header_layout, TYPE_HEADER)); //TYPE_HEADER = 0
 ```
-- Create OnGetItemViewType 
+- Create an instance of OnGetItemViewType implementation
 ```java
 OnGetItemViewType viewTypeCallback = new OnGetItemViewType() {
       @Override public int getItemViewType(int position) {
