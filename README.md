@@ -12,42 +12,43 @@ dataBinding {
       enabled = true
 }
 ```
-- Create RxDataSource object (make sure your item_layout is bindable)
+- Create your dataSet
 ```java
 //Dummy DataSet
 List<String> dataSet = new ArrayList<>();
-dataSet.add("Hello");
-dataSet.add("");
 dataSet.add("This");
-dataSet.add("is  An");
+dataSet.add("is");
+dataSet.add("an");
 dataSet.add("example");
 dataSet.add("of RX!");
-
-//RxDataSource
-//Note: ItemLayoutBinding is generated from item_layout.xml by the Databinding Library
-RxDataSource<String, ItemLayoutBinding> rxDataSource = new RxDataSource<>(R.layout.item_layout, dataSet);
 ```
-- Compose and call getAdapter passing in your recyclerView and subscribe!
+- Create RxDataSource 
 ```java
+RxDataSource<String> rxDataSource = new RxDataSource<>(dataSet);
+//compose, bind and subscribe!
 rxDataSource.map(String::toLowerCase)
-                .map(s -> s.replace(" ", ""))
-                .map(s -> s.toCharArray().length)
-                .repeat(10)
-                .getRxAdapter(recyclerView)
-                .subscribe(viewHolder -> {
-                    ItemLayoutBinding binding = viewHolder.getViewDataBinding();
-                    int item = viewHolder.getItem();
-                    binding.textViewItem.setText(item + "");
-                });
+      .repeat(10)
+      //cast call this method with the binding Layout
+      .<ItemLayoutBinding>bindRecyclerView(recyclerView, R.layout.item_layout) 
+      .subscribe(viewHolder -> {
+        ItemLayoutBinding b = viewHolder.getViewDataBinding();
+        String item = viewHolder.getItem();
+        b.textViewItem.setText(String.valueOf(item));
+      });
 ```
+And that's it! The recyclerView is going to show
 
-The output :
+<img src="https://raw.githubusercontent.com/ahmedrizwan/RxRecyclerAdapter/master/sample/src/main/res/drawable/rx_adapter.png" width=400px  />
 
-<img src="https://raw.githubusercontent.com/ahmedrizwan/RxRecyclerAdapter/master/app/src/main/res/drawable/recycler_adapter.png" width=400px  />
+####Changing the data dynamically
+Simply call updateAdapter after making changes to the dataSet and that'll do the trick!
 
+```java
+rxDataSource.map(...).filter(...).take(...).updateAdapter();
+```
 
 #### Adapter for multiple View Types
-If multiple view types are required for your recyclerView, then use RxDataSourceForTypes. For example, if we have two types HEADER and ITEM then the coding steps will be :-
+If multiple view types are required for your recyclerView, let's say, we have two types HEADER and ITEM then the coding steps will be :-
 - Enable Databinding
 - Create a list of ViewHolderInfo
 ```java 
@@ -55,44 +56,43 @@ List<ViewHolderInfo> viewHolderInfoList = new ArrayList<>();
 viewHolderInfoList.add(new ViewHolderInfo(R.layout.item_layout, TYPE_ITEM)); //TYPE_ITEM = 1
 viewHolderInfoList.add(new ViewHolderInfo(R.layout.item_header_layout, TYPE_HEADER)); //TYPE_HEADER = 0
 ```
-- Create RxDataSourceForTypes by passing in dataSet, viewHolderInfoList and implementation for getViewItemType
+- Create OnGetItemViewType 
 ```java
-RxDataSourceForTypes<String> rxDataSourceForTypes = new RxDataSourceForTypes<>(dataSet, viewHolderInfoList, new OnGetItemViewType() {
-            @Override
-            public int getItemViewType(final int position) {
-                if (position % 2 == 0) //headers are at even pos
-                    return TYPE_HEADER;
-                return TYPE_ITEM;
-            }
-        });
+OnGetItemViewType viewTypeCallback = new OnGetItemViewType() {
+      @Override public int getItemViewType(int position) {
+        if (position % 2 == 0) //headers are at even pos
+          return TYPE_HEADER;
+        return TYPE_ITEM;
+      }
+    };
 ```
-- Compose and call getAdapter... Subscribe!
+- Compose and call bindRecyclerView passing in recyclerView, viewHolderInfoList and viewTypeCallBack
 ```java
-rxDataSourceForTypes.repeat(2)
-                .map(String::toUpperCase)
-                .filter(s -> !s.isEmpty())
-                .getRxAdapter(mActivityMainBinding.recyclerView)
-                .subscribe(
-                        vH -> {
-                            //Check instance type and bind!
-                            final ViewDataBinding b = vH.getViewDataBinding();
-                            if (b instanceof ItemLayoutBinding) {
-                                final ItemLayoutBinding iB = (ItemLayoutBinding) b;
-                                iB.textViewItem.setText("ITEM: " + vH.getItem());
-                            } else if (b instanceof ItemHeaderLayoutBinding) {
-                                final ItemHeaderLayoutBinding hB = (ItemHeaderLayoutBinding) b;
-                                hB.textViewHeader.setText("HEADER: " + vH.getItem());
-                            }
-                        });
+rxDataSource.map(...).filter(...)
+     .bindRecyclerView(mActivityMainBinding.recyclerView, viewHolderInfoList,viewTypeCallback)
+     .subscribe(vH -> {
+      //Check instance type and bind!
+      final ViewDataBinding b = vH.getViewDataBinding();
+      if (b instanceof ItemLayoutBinding) {
+        final ItemLayoutBinding iB = (ItemLayoutBinding) b;
+        iB.textViewItem.setText("ITEM: " + vH.getItem());
+      } else if (b instanceof ItemHeaderLayoutBinding) {
+        ItemHeaderLayoutBinding hB = (ItemHeaderLayoutBinding) b;
+        hB.textViewHeader.setText("HEADER: " + vH.getItem());
+      }
+    });
 ```
-And the output would look like
+And the output would look something like
 
-<img src="https://raw.githubusercontent.com/ahmedrizwan/RxRecyclerAdapter/master/app/src/main/res/drawable/recycler_adapter_types.png" width=400px  />
+<img src="https://raw.githubusercontent.com/ahmedrizwan/RxRecyclerAdapter/master/sample/src/main/res/drawable/rx_adapter_types.png" width=400px  />
+
+More examples and details [here](https://medium.com/@ahmedrizwan/simplifying-recyclerview-adapters-with-rx-databinding-f02ebed0b386#.6vy6aq3k8) 
+
 ##Download 
 Repository available on jCenter
 
 ```Gradle
-compile 'com.minimize.android:rxrecycler-adapter:1.1.0'
+compile 'com.minimize.android:rxrecycler-adapter:1.2.1'
 ```
 *If the dependency fails to resolve, add this to your project repositories*
 ```Gradle
