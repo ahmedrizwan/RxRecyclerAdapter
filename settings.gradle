@@ -1,1 +1,1 @@
-include ':app', ':rxrecycler-adapter'
+include ':sample', ':rxrecycler-adapter'
