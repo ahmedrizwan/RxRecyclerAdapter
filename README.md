@@ -1,9 +1,6 @@
 # RxRecyclerAdapter
 Rx based generic RecyclerView Adapter Library. 
 
-## How does it work?
-You subscribe to the RxAdapter instance and it sends back the bindable layout, data item and position from the Adapter. This allows you to compose your items as they arrive! This also means that no more multiple RecyclerView.Adapter implementation-classes in your project!
-
 ## How to use it? 
 #### Example!
 - Enable Databinding by adding these lines to your build.gradle
