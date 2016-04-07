@@ -3,7 +3,7 @@ apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '23.0.2'
+    buildToolsVersion '24.0.0 rc2'
 
     defaultConfig {
         applicationId "com.minimize.android.rxrecyclerexample"
@@ -29,9 +29,9 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.1.1'
-    compile project(':rxrecycler-adapter')
-    compile 'com.jakewharton.rxbinding:rxbinding:0.3.0'
+  compile fileTree(include: ['*.jar'], dir: 'libs')
+  testCompile 'junit:junit:4.12'
+  compile 'com.android.support:appcompat-v7:23.3.0'
+  compile project(':rxrecycler-adapter')
+  compile 'com.jakewharton.rxbinding:rxbinding:0.3.0'
 }
