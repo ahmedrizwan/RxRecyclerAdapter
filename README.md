@@ -89,7 +89,7 @@ More examples and details [here](https://medium.com/@ahmedrizwan/simplifying-rec
 Repository available on jCenter
 
 ```Gradle
-compile 'com.minimize.android:rxrecycler-adapter:1.2.1'
+compile 'com.minimize.android:rxrecycler-adapter:1.2.2'
 ```
 *If the dependency fails to resolve, add this to your project repositories*
 ```Gradle
