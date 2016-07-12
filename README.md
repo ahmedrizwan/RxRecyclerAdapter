@@ -29,8 +29,7 @@ rxDataSource.map(String::toLowerCase)
       .<ItemLayoutBinding>bindRecyclerView(recyclerView, R.layout.item_layout) 
       .subscribe(viewHolder -> {
         ItemLayoutBinding b = viewHolder.getViewDataBinding();
-        String item = viewHolder.getItem();
-        b.textViewItem.setText(String.valueOf(item));
+        b.textViewItem.setText(viewHolder.getItem());
       });
 ```
 And that's it! The recyclerView is going to show
