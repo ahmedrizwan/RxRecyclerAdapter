@@ -1,4 +1,9 @@
 # RxRecyclerAdapter
+
+[![Release](https://img.shields.io/badge/jCenter-1.2.2-brightgreen.svg)](https://bintray.com/sbrukhanda/maven/FragmentViewPager)
+[![GitHub license](https://img.shields.io/badge/license-Apache%20Version%202.0-blue.svg)](https://github.com/sbrukhanda/fragmentviewpager/blob/master/LICENSE.txt)
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-RxRecyclerAdapter-green.svg?style=flat)](https://android-arsenal.com/details/1/2084)
+
 Rx based generic RecyclerView Adapter Library. 
 
 ## How to use it? 
