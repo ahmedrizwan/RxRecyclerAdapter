@@ -70,7 +70,7 @@ OnGetItemViewType viewTypeCallback = new OnGetItemViewType() {
 - Compose and call bindRecyclerView passing in recyclerView, viewHolderInfoList and viewTypeCallBack
 ```java
 rxDataSource.map(...).filter(...)
-     .bindRecyclerView(mActivityMainBinding.recyclerView, viewHolderInfoList,viewTypeCallback)
+     .bindRecyclerView(recyclerView, viewHolderInfoList, viewTypeCallback)
      .subscribe(vH -> {
       //Check instance type and bind!
       final ViewDataBinding b = vH.getViewDataBinding();
