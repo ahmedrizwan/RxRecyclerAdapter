@@ -14,6 +14,26 @@ dataBinding {
       enabled = true
 }
 ```
+- Create the layout file 
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_horizontal_margin">
+
+        <TextView android:id="@+id/textViewItem"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  tools:text="Recycler Item"/>
+
+    </LinearLayout>
+</layout>
+```
 - Create your dataSet
 ```java
 //Dummy DataSet
