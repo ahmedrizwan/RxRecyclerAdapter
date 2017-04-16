@@ -61,7 +61,7 @@ And that's it! The recyclerView is going to show
 
 <img src="https://raw.githubusercontent.com/ahmedrizwan/RxRecyclerAdapter/master/sample/src/main/res/drawable/rx_adapter.png" width=400px  />
 
-####Changing the data dynamically
+#### Changing the data dynamically
 Simply call updateAdapter after making changes to the dataSet and that'll do the trick!
 
 ```java
@@ -109,7 +109,7 @@ And the output would look something like
 
 More examples and details [here](https://medium.com/@ahmedrizwan/simplifying-recyclerview-adapters-with-rx-databinding-f02ebed0b386#.6vy6aq3k8) 
 
-##Download 
+## Download 
 Repository available on jCenter
 
 ```Gradle
@@ -124,7 +124,7 @@ repositories {
 }
 ```
 
-##License 
+## License 
 ```
 Copyright 2015 Ahmed Rizwan
 
