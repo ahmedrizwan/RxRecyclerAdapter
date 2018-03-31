@@ -6,9 +6,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import java.util.List;
-import rx.Observable;
-import rx.subjects.PublishSubject;
+
+import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
 
 /**
  * Created by ahmedrizwan on 09/12/2015.
@@ -33,7 +35,7 @@ public class RxAdapter<DataType, LayoutBinding extends ViewDataBinding>
   }
 
   public Observable<SimpleViewHolder<DataType, LayoutBinding>> asObservable() {
-    return mPublishSubject.asObservable();
+    return mPublishSubject;
   }
 
   @Override

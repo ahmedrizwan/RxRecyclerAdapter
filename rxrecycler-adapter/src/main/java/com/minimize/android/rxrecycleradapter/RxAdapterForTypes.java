@@ -7,7 +7,9 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
-import rx.subjects.PublishSubject;
+import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
+
 
 /**
  * Created by ahmedrizwan on 10/12/2015.
@@ -31,8 +33,8 @@ public class RxAdapterForTypes<T> extends RecyclerView.Adapter<TypesViewHolder<T
         mOnViewHolderInflate = onViewHolderInflate;
     }
 
-    public rx.Observable<TypesViewHolder<T>> asObservable() {
-        return mPublishSubject.asObservable();
+    public Observable<TypesViewHolder<T>> asObservable() {
+        return mPublishSubject;
     }
 
     @Override
