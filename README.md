@@ -1,6 +1,6 @@
 # RxRecyclerAdapter
 
-[![Release](https://img.shields.io/badge/jCenter-1.2.2-brightgreen.svg)](https://bintray.com/sbrukhanda/maven/FragmentViewPager)
+[![Release](https://img.shields.io/badge/jCenter-1.3.0-brightgreen.svg)](https://bintray.com/sbrukhanda/maven/FragmentViewPager)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20Version%202.0-blue.svg)](https://github.com/sbrukhanda/fragmentviewpager/blob/master/LICENSE.txt)
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-RxRecyclerAdapter-green.svg?style=flat)](https://android-arsenal.com/details/1/2084)
 
@@ -9,7 +9,7 @@ Rx based generic RecyclerView Adapter Library.
 ## How to use it? 
 #### Example!
 - Enable Databinding by adding these lines to your build.gradle
-```Gradle
+```kotlin
 dataBinding {
       enabled = true
 }
@@ -35,27 +35,28 @@ dataBinding {
 </layout>
 ```
 - Create your dataSet
-```java
+```kotlin
 //Dummy DataSet
-List<String> dataSet = new ArrayList<>();
-dataSet.add("This");
-dataSet.add("is");
-dataSet.add("an");
-dataSet.add("example");
-dataSet.add("of RX!");
+val dataSet = mutableListOf<String>()
+dataSet.add("Lorem")
+dataSet.add("ipsum")
+dataSet.add("dolor")
+dataSet.add("sit")
+dataSet.add("amet")
 ```
 - Create RxDataSource 
-```java
-RxDataSource<String> rxDataSource = new RxDataSource<>(dataSet);
-//compose, bind and subscribe!
-rxDataSource.map(String::toLowerCase)
-      .repeat(10)
-      //cast call this method with the binding Layout
-      .<ItemLayoutBinding>bindRecyclerView(recyclerView, R.layout.item_layout) 
-      .subscribe(viewHolder -> {
-        ItemLayoutBinding b = viewHolder.getViewDataBinding();
-        b.textViewItem.setText(viewHolder.getItem());
-      });
+```kotlin
+// Simple data source
+val rxDataSource = RxDataSource<ItemLayoutBinding, String>(R.layout.item_layout, dataSet)
+
+rxDataSource
+        .map { it.toUpperCase() }
+        .repeat(4)
+        .asObservable()
+        .subscribe {
+            val binding = it.viewDataBinding ?: return@subscribe
+            binding.textViewItem.text = it.item
+        }
 ```
 And that's it! The recyclerView is going to show
 
@@ -72,36 +73,37 @@ rxDataSource.map(...).filter(...).take(...).updateAdapter();
 If multiple view types are required for your recyclerView, let's say, we have two types HEADER and ITEM then the coding steps will be :-
 - Enable Databinding
 - Create a list of ViewHolderInfo
-```java 
-List<ViewHolderInfo> viewHolderInfoList = new ArrayList<>();
-viewHolderInfoList.add(new ViewHolderInfo(R.layout.item_layout, TYPE_ITEM)); //TYPE_ITEM = 1
-viewHolderInfoList.add(new ViewHolderInfo(R.layout.item_header_layout, TYPE_HEADER)); //TYPE_HEADER = 0
+```kotlin 
+//ViewHolderInfo List
+val viewHolderInfoList = ArrayList<ViewHolderInfo>()
+viewHolderInfoList.add(ViewHolderInfo(R.layout.item_layout, TYPE_ITEM))
+viewHolderInfoList.add(ViewHolderInfo(R.layout.item_header_layout, TYPE_HEADER))
 ```
-- Create an instance of OnGetItemViewType implementation
-```java
-OnGetItemViewType viewTypeCallback = new OnGetItemViewType() {
-      @Override public int getItemViewType(int position) {
-        if (position % 2 == 0) //headers are at even pos
-          return TYPE_HEADER;
-        return TYPE_ITEM;
-      }
-    };
+- Create an instance of RxDataSourceSectioned implementation
+```kotlin
+ // Sectioned data source
+val rxDataSourceSectioned = RxDataSourceSectioned(dataSet, viewHolderInfoList, object : OnGetItemViewType() {
+    override fun getItemViewType(position: Int): Int {
+        if (position % 2 == 0) { // even are headers
+            return TYPE_HEADER
+        }
+        return TYPE_ITEM
+    }
+})
 ```
 - Compose and call bindRecyclerView passing in recyclerView, viewHolderInfoList and viewTypeCallBack
-```java
-rxDataSource.map(...).filter(...)
-     .bindRecyclerView(recyclerView, viewHolderInfoList, viewTypeCallback)
-     .subscribe(vH -> {
-      //Check instance type and bind!
-      final ViewDataBinding b = vH.getViewDataBinding();
-      if (b instanceof ItemLayoutBinding) {
-        final ItemLayoutBinding iB = (ItemLayoutBinding) b;
-        iB.textViewItem.setText("ITEM: " + vH.getItem());
-      } else if (b instanceof ItemHeaderLayoutBinding) {
-        ItemHeaderLayoutBinding hB = (ItemHeaderLayoutBinding) b;
-        hB.textViewHeader.setText("HEADER: " + vH.getItem());
-      }
-    });
+```kotlin
+rxDataSourceSectioned
+    .asObservable()
+    .subscribe {
+        val viewDataBinding = it.viewDataBinding
+        val data = it.item
+
+        when (viewDataBinding) {
+            is ItemLayoutBinding -> viewDataBinding.textViewItem.text = "ITEM: " + data
+            is ItemHeaderLayoutBinding -> viewDataBinding.textViewHeader.text = "HEADER: " + data
+        }
+    }
 ```
 And the output would look something like
 
@@ -113,7 +115,7 @@ More examples and details [here](https://medium.com/@ahmedrizwan/simplifying-rec
 Repository available on jCenter
 
 ```Gradle
-compile 'com.minimize.android:rxrecycler-adapter:1.2.2'
+compile 'com.minimize.android:rxrecycler-adapter:1.3.1'
 ```
 *If the dependency fails to resolve, add this to your project repositories*
 ```Gradle
