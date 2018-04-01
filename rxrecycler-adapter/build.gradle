@@ -16,7 +16,7 @@ ext {
     artifact = 'rxrecycler-adapter'
 
     libraryDescription = 'Rx based generic RecyclerView Adapter Library.'
-    libraryVersion = '1.3.0'
+    libraryVersion = '1.3.1'
 
     developerId = 'ahmedrizwan'
     developerName = 'Ahmed Rizwan'
@@ -47,14 +47,18 @@ android {
 
 }
 
+tasks.withType(Javadoc).all {
+    enabled = false
+}
+
 ext.support_version = "27.1.0"
 
 dependencies {
     implementation "com.android.support:appcompat-v7:$support_version"
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.12'
-    api 'io.reactivex.rxjava2:rxjava:2.1.9'
-    api 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    compile 'io.reactivex.rxjava2:rxjava:2.1.9'
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.2'
     implementation "com.android.support:support-annotations:$support_version"
     implementation "com.android.support:recyclerview-v7:$support_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"

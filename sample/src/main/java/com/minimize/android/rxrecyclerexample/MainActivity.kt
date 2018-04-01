@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 return TYPE_ITEM
             }
-        }).last()
+        })
 
         rxDataSourceSectioned
                 .asObservable()
