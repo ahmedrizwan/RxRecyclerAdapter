@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <RelativeLayout
-
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
@@ -13,16 +13,24 @@
             android:layout_height="wrap_content"
             android:hint="Search Items"
             android:layout_margin="16dip"
-            android:visibility="gone"
             android:id="@+id/searchEditText"/>
 
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:layout_below="@id/searchEditText"
             android:padding="16dip"
             android:id="@+id/recyclerView"
         />
-    </RelativeLayout>
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/sectionedToggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:checked="false"
+            android:text="Sectioned"/>
+    </LinearLayout>
 </layout>
 
