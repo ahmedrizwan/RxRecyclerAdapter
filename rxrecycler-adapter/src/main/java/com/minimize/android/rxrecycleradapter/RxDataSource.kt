@@ -96,4 +96,50 @@ class RxDataSource<LayoutBinding : ViewDataBinding, DataType>(@LayoutRes private
         return this
     }
 
+    fun concatMap(func: (DataType) -> Observable<out DataType>): RxDataSource<LayoutBinding, DataType> {
+        mDataSet = Observable.fromIterable(mDataSet).concatMap(func).toList().blockingGet()
+        return this
+    }
+
+    fun concatWith(observable: Observable<out DataType>): RxDataSource<LayoutBinding, DataType> {
+        mDataSet = Observable.fromIterable(mDataSet).concatWith(observable).toList().blockingGet()
+        return this
+    }
+
+    fun distinct(): RxDataSource<LayoutBinding, DataType> {
+        mDataSet = Observable.fromIterable(mDataSet).distinct().toList().blockingGet()
+        return this
+    }
+
+    fun elementAt(index: Long): RxDataSource<LayoutBinding, DataType> {
+        mDataSet = listOf(Observable.fromIterable(mDataSet).elementAt(index).blockingGet())
+        return this
+    }
+
+    fun elementAtOrDefault(index: Long, defaultValue: DataType): RxDataSource<LayoutBinding, DataType> {
+        mDataSet = listOf(Observable.fromIterable(mDataSet).elementAt(index, defaultValue)
+                .blockingGet())
+        return this
+    }
+
+    fun first(defaultItem: DataType): RxDataSource<LayoutBinding, DataType> {
+        mDataSet = listOf(Observable.fromIterable(mDataSet).first(defaultItem).blockingGet())
+        return this
+    }
+
+    fun flatMap(func: (DataType) -> Observable<out DataType>): RxDataSource<LayoutBinding, DataType> {
+        mDataSet = Observable.fromIterable(mDataSet).flatMap(func).toList().blockingGet()
+        return this
+    }
+
+    fun reduce(initialValue: DataType, reducer: (DataType, DataType) -> DataType): RxDataSource<LayoutBinding, DataType> {
+        mDataSet = listOf(Observable.fromIterable(mDataSet).reduce(initialValue, reducer).blockingGet())
+        return this
+    }
+
+    fun take(count: Long): RxDataSource<LayoutBinding, DataType> {
+        mDataSet = Observable.fromIterable(mDataSet).take(count).toList().blockingGet()
+        return this
+    }
+
 }

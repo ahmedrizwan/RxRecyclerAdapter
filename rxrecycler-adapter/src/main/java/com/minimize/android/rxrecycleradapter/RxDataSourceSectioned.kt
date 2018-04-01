@@ -1,5 +1,6 @@
 package com.minimize.android.rxrecycleradapter
 
+
 import android.support.v7.widget.RecyclerView
 import io.reactivex.Observable
 import io.reactivex.functions.Function
@@ -37,6 +38,10 @@ class RxDataSourceSectioned<DataType>(var mDataSet: List<DataType>, val mViewHol
     fun updateDataSet(dataSet: List<DataType>): RxDataSourceSectioned<DataType> {
         mDataSet = dataSet
         return this
+    }
+
+    fun asObservable(): Observable<TypesViewHolder<DataType>> {
+        return rxAdapter.asObservable()
     }
 
     /***
@@ -91,7 +96,50 @@ class RxDataSourceSectioned<DataType>(var mDataSet: List<DataType>, val mViewHol
         return this
     }
 
-    fun asObservable(): Observable<TypesViewHolder<DataType>> {
-        return rxAdapter.asObservable()
+    fun concatMap(func: (DataType) -> Observable<out DataType>): RxDataSourceSectioned<DataType> {
+        mDataSet = Observable.fromIterable(mDataSet).concatMap(func).toList().blockingGet()
+        return this
     }
+
+    fun concatWith(observable: Observable<out DataType>): RxDataSourceSectioned<DataType> {
+        mDataSet = Observable.fromIterable(mDataSet).concatWith(observable).toList().blockingGet()
+        return this
+    }
+
+    fun distinct(): RxDataSourceSectioned<DataType> {
+        mDataSet = Observable.fromIterable(mDataSet).distinct().toList().blockingGet()
+        return this
+    }
+
+    fun elementAt(index: Long): RxDataSourceSectioned<DataType> {
+        mDataSet = listOf(Observable.fromIterable(mDataSet).elementAt(index).blockingGet())
+        return this
+    }
+
+    fun elementAtOrDefault(index: Long, defaultValue: DataType): RxDataSourceSectioned<DataType> {
+        mDataSet = listOf(Observable.fromIterable(mDataSet).elementAt(index, defaultValue)
+                .blockingGet())
+        return this
+    }
+
+    fun first(defaultItem: DataType): RxDataSourceSectioned<DataType> {
+        mDataSet = listOf(Observable.fromIterable(mDataSet).first(defaultItem).blockingGet())
+        return this
+    }
+
+    fun flatMap(func: (DataType) -> Observable<out DataType>): RxDataSourceSectioned<DataType> {
+        mDataSet = Observable.fromIterable(mDataSet).flatMap(func).toList().blockingGet()
+        return this
+    }
+
+    fun reduce(initialValue: DataType, reducer: (DataType, DataType) -> DataType): RxDataSourceSectioned<DataType> {
+        mDataSet = listOf(Observable.fromIterable(mDataSet).reduce(initialValue, reducer).blockingGet())
+        return this
+    }
+
+    fun take(count: Long): RxDataSourceSectioned<DataType> {
+        mDataSet = Observable.fromIterable(mDataSet).take(count).toList().blockingGet()
+        return this
+    }
+
 }
