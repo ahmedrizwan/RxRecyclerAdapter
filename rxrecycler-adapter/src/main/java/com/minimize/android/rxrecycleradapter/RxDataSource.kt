@@ -10,14 +10,14 @@ import java.util.Collections.emptyList
 /**
  * Created by ahmedrizwan on 26/12/2015.
  */
-class RxDataSource<LayoutBinding : ViewDataBinding, DataType>(@LayoutRes private val item_layout: Int, var mDataSet: List<DataType>) {
+class RxDataSource<LayoutBinding : ViewDataBinding, DataType>(@LayoutRes private val itemLayout: Int, var dataSet: List<DataType>) {
     /***
      * Call this if you need access to the Adapter!
      * Warning: might return null!
      *
      * @return RxAdapter Instance
      */
-    private val rxAdapter: RxAdapter<DataType, LayoutBinding> = RxAdapter(item_layout, mDataSet)
+    private val rxAdapter: RxAdapter<DataType, LayoutBinding> = RxAdapter(itemLayout, dataSet)
 
     /***
      * Call this when binding with a single Item-Type
@@ -40,7 +40,7 @@ class RxDataSource<LayoutBinding : ViewDataBinding, DataType>(@LayoutRes private
      * For setting base dataSet
      */
     fun updateDataSet(dataSet: List<DataType>): RxDataSource<LayoutBinding, DataType> {
-        mDataSet = dataSet
+        this.dataSet = dataSet
         return this
     }
 
@@ -49,30 +49,35 @@ class RxDataSource<LayoutBinding : ViewDataBinding, DataType>(@LayoutRes private
      */
     fun updateAdapter() {
         //update the update
-        rxAdapter.updateDataSet(mDataSet)
+        rxAdapter.updateDataSet(dataSet)
     }
 
     // Transformation methods
 
     fun map(mapper: (DataType) -> DataType): RxDataSource<LayoutBinding, DataType> {
-        mDataSet = Observable.fromIterable(mDataSet).map(mapper).toList().blockingGet()
-        rxAdapter.updateDataSet(mDataSet)
+        dataSet = Observable.fromIterable(dataSet).map(mapper).toList().blockingGet()
+        rxAdapter.updateDataSet(dataSet)
         return this
     }
 
     fun filter(predicate: (DataType) -> Boolean): RxDataSource<LayoutBinding, DataType> {
-        mDataSet = Observable.fromIterable(mDataSet).filter(predicate).toList().blockingGet()
-        rxAdapter.updateDataSet(mDataSet)
+        dataSet = Observable.fromIterable(dataSet).filter(predicate).toList().blockingGet()
+        rxAdapter.updateDataSet(dataSet)
         return this
     }
 
     fun last(): RxDataSource<LayoutBinding, DataType> {
-        mDataSet = listOf(Observable.fromIterable(mDataSet).blockingLast())
+        dataSet = listOf(Observable.fromIterable(dataSet).blockingLast())
+        return this
+    }
+
+    fun first(): RxDataSource<LayoutBinding, DataType> {
+        dataSet = listOf(Observable.fromIterable(dataSet).blockingFirst())
         return this
     }
 
     fun lastOrDefault(defaultValue: DataType): RxDataSource<LayoutBinding, DataType> {
-        mDataSet = Observable.fromIterable(mDataSet)
+        dataSet = Observable.fromIterable(dataSet)
                 .takeLast(1)
                 .defaultIfEmpty(defaultValue)
                 .toList()
@@ -81,64 +86,63 @@ class RxDataSource<LayoutBinding : ViewDataBinding, DataType>(@LayoutRes private
     }
 
     fun limit(count: Int): RxDataSource<LayoutBinding, DataType> {
-        mDataSet = Observable.fromIterable(mDataSet).take(count.toLong()).toList().blockingGet()
+        dataSet = Observable.fromIterable(dataSet).take(count.toLong()).toList().blockingGet()
         return this
     }
 
     fun repeat(count: Long): RxDataSource<LayoutBinding, DataType> {
-        val dataSet = mDataSet
-        mDataSet = Observable.fromIterable(dataSet).repeat(count).toList().blockingGet()
+        dataSet = Observable.fromIterable(dataSet).repeat(count).toList().blockingGet()
         return this
     }
 
     fun empty(): RxDataSource<LayoutBinding, DataType> {
-        mDataSet = emptyList<DataType>()
+        dataSet = emptyList<DataType>()
         return this
     }
 
     fun concatMap(func: (DataType) -> Observable<out DataType>): RxDataSource<LayoutBinding, DataType> {
-        mDataSet = Observable.fromIterable(mDataSet).concatMap(func).toList().blockingGet()
+        dataSet = Observable.fromIterable(dataSet).concatMap(func).toList().blockingGet()
         return this
     }
 
     fun concatWith(observable: Observable<out DataType>): RxDataSource<LayoutBinding, DataType> {
-        mDataSet = Observable.fromIterable(mDataSet).concatWith(observable).toList().blockingGet()
+        dataSet = Observable.fromIterable(dataSet).concatWith(observable).toList().blockingGet()
         return this
     }
 
     fun distinct(): RxDataSource<LayoutBinding, DataType> {
-        mDataSet = Observable.fromIterable(mDataSet).distinct().toList().blockingGet()
+        dataSet = Observable.fromIterable(dataSet).distinct().toList().blockingGet()
         return this
     }
 
     fun elementAt(index: Long): RxDataSource<LayoutBinding, DataType> {
-        mDataSet = listOf(Observable.fromIterable(mDataSet).elementAt(index).blockingGet())
+        dataSet = listOf(Observable.fromIterable(dataSet).elementAt(index).blockingGet())
         return this
     }
 
     fun elementAtOrDefault(index: Long, defaultValue: DataType): RxDataSource<LayoutBinding, DataType> {
-        mDataSet = listOf(Observable.fromIterable(mDataSet).elementAt(index, defaultValue)
+        dataSet = listOf(Observable.fromIterable(dataSet).elementAt(index, defaultValue)
                 .blockingGet())
         return this
     }
 
     fun first(defaultItem: DataType): RxDataSource<LayoutBinding, DataType> {
-        mDataSet = listOf(Observable.fromIterable(mDataSet).first(defaultItem).blockingGet())
+        dataSet = listOf(Observable.fromIterable(dataSet).first(defaultItem).blockingGet())
         return this
     }
 
     fun flatMap(func: (DataType) -> Observable<out DataType>): RxDataSource<LayoutBinding, DataType> {
-        mDataSet = Observable.fromIterable(mDataSet).flatMap(func).toList().blockingGet()
+        dataSet = Observable.fromIterable(dataSet).flatMap(func).toList().blockingGet()
         return this
     }
 
     fun reduce(initialValue: DataType, reducer: (DataType, DataType) -> DataType): RxDataSource<LayoutBinding, DataType> {
-        mDataSet = listOf(Observable.fromIterable(mDataSet).reduce(initialValue, reducer).blockingGet())
+        dataSet = listOf(Observable.fromIterable(dataSet).reduce(initialValue, reducer).blockingGet())
         return this
     }
 
     fun take(count: Long): RxDataSource<LayoutBinding, DataType> {
-        mDataSet = Observable.fromIterable(mDataSet).take(count).toList().blockingGet()
+        dataSet = Observable.fromIterable(dataSet).take(count).toList().blockingGet()
         return this
     }
 

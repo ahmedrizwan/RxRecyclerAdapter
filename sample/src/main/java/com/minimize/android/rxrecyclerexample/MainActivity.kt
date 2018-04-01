@@ -42,31 +42,38 @@ class MainActivity : AppCompatActivity() {
         // Simple data source
         val rxDataSource = RxDataSource<ItemLayoutBinding, String>(R.layout.item_layout, dataSet)
 
-        rxDataSource.map { it.toUpperCase() }.limit(4)
-        rxDataSource.asObservable().subscribe {
-            val binding = it.viewDataBinding ?: return@subscribe
-            binding.textViewItem.text = it.item
-        }
+        rxDataSource
+                .map {
+                    it.toUpperCase()
+                }
+                .repeat(4)
+                .asObservable()
+                .subscribe {
+                    val binding = it.viewDataBinding ?: return@subscribe
+                    binding.textViewItem.text = it.item
+                }
 
         // Sectioned data source
-        val rxDataSourceSectioned = RxDataSourceSectioned<String>(dataSet, viewHolderInfoList, object : OnGetItemViewType() {
+        val rxDataSourceSectioned = RxDataSourceSectioned(dataSet, viewHolderInfoList, object : OnGetItemViewType() {
             override fun getItemViewType(position: Int): Int {
                 if (position % 2 == 0) { // even are headers
-                    return TYPE_HEADER;
+                    return TYPE_HEADER
                 }
-                return TYPE_ITEM;
+                return TYPE_ITEM
             }
-        }).repeat(10)
+        }).last()
 
-        rxDataSourceSectioned.asObservable().subscribe {
-            val viewDataBinding = it.viewDataBinding
-            val data = it.item
+        rxDataSourceSectioned
+                .asObservable()
+                .subscribe {
+                    val viewDataBinding = it.viewDataBinding
+                    val data = it.item
 
-            when (viewDataBinding) {
-                is ItemLayoutBinding -> viewDataBinding.textViewItem.text = "ITEM: " + data
-                is ItemHeaderLayoutBinding -> viewDataBinding.textViewHeader.text = "HEADER: " + data
-            }
-        }
+                    when (viewDataBinding) {
+                        is ItemLayoutBinding -> viewDataBinding.textViewItem.text = "ITEM: " + data
+                        is ItemHeaderLayoutBinding -> viewDataBinding.textViewHeader.text = "HEADER: " + data
+                    }
+                }
 
         mActivityMainBinding.sectionedToggle.setOnCheckedChangeListener { compoundButton, checked ->
             if (checked) {
@@ -82,11 +89,14 @@ class MainActivity : AppCompatActivity() {
             rxDataSource.bindRecyclerView(mActivityMainBinding.recyclerView)
         }
 
+        val dataSourceDataSet = rxDataSource.dataSet
+        val dataSourceSectionedDataSet = rxDataSourceSectioned.dataSet
+
         RxTextView.afterTextChangeEvents(mActivityMainBinding.searchEditText).subscribe { event ->
-            rxDataSource.updateDataSet(dataSet) //base items should remain the same
+            rxDataSource.updateDataSet(dataSourceDataSet) //base items should remain the same
                     .filter { s -> s.toLowerCase().contains(event.view().text) }
                     .updateAdapter()
-            rxDataSourceSectioned.updateDataSet(dataSet) //base items should remain the same
+            rxDataSourceSectioned.updateDataSet(dataSourceSectionedDataSet) //base items should remain the same
                     .filter { s -> s.toLowerCase().contains(event.view().text) }
                     .updateAdapter()
         }
