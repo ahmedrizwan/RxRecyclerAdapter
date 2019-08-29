@@ -54,4 +54,9 @@ internal class RxAdapter<DataType, LayoutBinding : ViewDataBinding>(@param:Layou
         this.dataSet = dataSet
         notifyDataSetChanged()
     }
+
+    fun updateDataSetWithOneEfectedItem(dataSet: List<DataType>, position: Int){
+        this.dataSet = dataSet
+        notifyItemChanged(position)
+    }
 }
