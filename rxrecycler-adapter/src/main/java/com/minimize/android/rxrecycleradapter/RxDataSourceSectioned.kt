@@ -4,6 +4,7 @@ package com.minimize.android.rxrecycleradapter
 import android.support.v7.widget.RecyclerView
 import io.reactivex.Observable
 import io.reactivex.functions.Function
+import java.text.FieldPosition
 import java.util.*
 
 
@@ -50,6 +51,11 @@ class RxDataSourceSectioned<DataType>(var dataSet: List<DataType>, viewHolderInf
     fun updateAdapter() {
         //update the update
         rxAdapter.updateDataSet(dataSet)
+    }
+
+    fun updateAdapter(position: Int) {
+        //update the update
+        rxAdapter.updateDataSetWiOneEffectedItem(dataSet, position)
     }
 
     // Transformation methods

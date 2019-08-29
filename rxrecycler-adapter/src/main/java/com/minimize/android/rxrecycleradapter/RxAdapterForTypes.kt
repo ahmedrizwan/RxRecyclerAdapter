@@ -62,4 +62,9 @@ internal class RxAdapterForTypes<T>(dataSet: List<T>, private val mViewHolderInf
         notifyDataSetChanged()
     }
 
+    fun updateDataSetWiOneEffectedItem(dataSet: List<T>, position: Int) {
+        this.dataSet = dataSet
+        notifyItemChanged(position)
+    }
+
 }
