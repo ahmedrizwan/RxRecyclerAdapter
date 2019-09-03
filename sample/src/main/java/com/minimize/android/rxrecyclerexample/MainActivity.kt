@@ -98,7 +98,7 @@ class MainActivity : AppCompatActivity() {
                     .updateAdapter()
             rxDataSourceSectioned.updateDataSet(dataSourceSectionedDataSet) //base items should remain the same
                     .filter { s -> s.toLowerCase().contains(event.view().text) }
-                    .updateAdapter()
+                    .notifyDataSetChanged()
         }
     }
 }

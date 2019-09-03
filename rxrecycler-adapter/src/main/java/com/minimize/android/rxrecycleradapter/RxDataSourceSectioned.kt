@@ -48,27 +48,27 @@ class RxDataSourceSectioned<DataType>(var dataSet: List<DataType>, viewHolderInf
     /***
      * For updating Adapter
      */
-    fun updateAdapter() {
+    fun notifyDataSetChanged() {
         //update the update
-        rxAdapter.updateDataSet(dataSet)
+        rxAdapter.notifyDataSetChanged(dataSet)
     }
 
-    fun updateAdapter(position: Int) {
+    fun notifyItemChanged(position: Int) {
         //update the update
-        rxAdapter.updateDataSetWiOneEffectedItem(dataSet, position)
+        rxAdapter.notifyItemChanged(dataSet, position)
     }
 
     // Transformation methods
 
     fun map(mapper: Function<in DataType, out DataType>): RxDataSourceSectioned<DataType> {
         dataSet = Observable.fromIterable(dataSet).map(mapper).toList().blockingGet()
-        rxAdapter.updateDataSet(dataSet)
+        rxAdapter.notifyDataSetChanged(dataSet)
         return this
     }
 
     fun filter(predicate: (DataType) -> Boolean): RxDataSourceSectioned<DataType> {
         dataSet = Observable.fromIterable(dataSet).filter(predicate).toList().blockingGet()
-        rxAdapter.updateDataSet(dataSet)
+        rxAdapter.notifyDataSetChanged(dataSet)
         return this
     }
 
