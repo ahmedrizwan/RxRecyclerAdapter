@@ -4,7 +4,6 @@ package com.minimize.android.rxrecycleradapter
 import android.support.v7.widget.RecyclerView
 import io.reactivex.Observable
 import io.reactivex.functions.Function
-import java.text.FieldPosition
 import java.util.*
 
 
@@ -34,6 +33,20 @@ class RxDataSourceSectioned<DataType>(var dataSet: List<DataType>, viewHolderInf
     }
 
     /***
+     * For setting base dataSet and update adapter
+     */
+    fun updateDataSet(adapterChanges: AdapterChanges<DataType>): RxDataSourceSectioned<DataType> {
+        this.dataSet = adapterChanges.list
+        when (adapterChanges.transactionType) {
+            AdapterChanges.TransactionTypes.REPLACE_ALL -> notifyDataSetChanged()
+            AdapterChanges.TransactionTypes.MODIFY -> notifyItemChanged(adapterChanges.effectedItem)
+            AdapterChanges.TransactionTypes.DELETE -> notifyItemRemoved(adapterChanges.effectedItem)
+            AdapterChanges.TransactionTypes.ADD -> notifyItemInserted(adapterChanges.effectedItem)
+        }
+        return this
+    }
+
+    /***
      * For setting base dataSet
      */
     fun updateDataSet(dataSet: List<DataType>): RxDataSourceSectioned<DataType> {
@@ -48,14 +61,29 @@ class RxDataSourceSectioned<DataType>(var dataSet: List<DataType>, viewHolderInf
     /***
      * For updating Adapter
      */
-    fun notifyDataSetChanged() {
+    fun updateAdapter() {
+        //update the update
+        notifyDataSetChanged()
+    }
+
+    private fun notifyDataSetChanged() {
         //update the update
         rxAdapter.notifyDataSetChanged(dataSet)
     }
 
-    fun notifyItemChanged(position: Int) {
+    private fun notifyItemChanged(position: Int) {
         //update the update
         rxAdapter.notifyItemChanged(dataSet, position)
+    }
+
+    private fun notifyItemRemoved(position: Int) {
+        //update the update
+        rxAdapter.notifyItemRemoved(dataSet, position)
+    }
+
+    private fun notifyItemInserted(position: Int) {
+        //update the update
+        rxAdapter.notifyItemInserted(dataSet, position)
     }
 
     // Transformation methods

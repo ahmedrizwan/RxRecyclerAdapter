@@ -59,4 +59,25 @@ internal class RxAdapter<DataType, LayoutBinding : ViewDataBinding>(@param:Layou
         this.dataSet = dataSet
         notifyItemChanged(position)
     }
+
+    fun notifyDataSetChanged(dataSet: List<DataType>) {
+        this.dataSet = dataSet
+        notifyDataSetChanged()
+    }
+
+    fun notifyItemChanged(dataSet: List<DataType>, position: Int) {
+        this.dataSet = dataSet
+        notifyItemChanged(position)
+    }
+
+    fun notifyItemInserted(dataSet: List<DataType>, position: Int) {
+        this.dataSet = dataSet
+        notifyItemInserted(position)
+    }
+
+    fun notifyItemRemoved(dataSet: List<DataType>, position: Int) {
+        this.dataSet = dataSet
+        notifyItemRemoved(position)
+    }
+
 }

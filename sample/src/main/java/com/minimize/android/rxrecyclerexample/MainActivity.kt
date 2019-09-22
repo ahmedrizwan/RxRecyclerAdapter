@@ -12,12 +12,13 @@ import com.minimize.android.rxrecycleradapter.ViewHolderInfo
 import com.minimize.android.rxrecyclerexample.databinding.ActivityMainBinding
 import com.minimize.android.rxrecyclerexample.databinding.ItemHeaderLayoutBinding
 import com.minimize.android.rxrecyclerexample.databinding.ItemLayoutBinding
+import io.reactivex.disposables.CompositeDisposable
 import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
-    private val TYPE_HEADER = 0
-    private val TYPE_ITEM = 1
+
+    private val bag = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,16 +43,19 @@ class MainActivity : AppCompatActivity() {
         // Simple data source
         val rxDataSource = RxDataSource<ItemLayoutBinding, String>(R.layout.item_layout, dataSet)
 
-        rxDataSource
-                .map {
-                    it.toUpperCase()
-                }
-                .repeat(4)
-                .asObservable()
-                .subscribe {
-                    val binding = it.viewDataBinding ?: return@subscribe
-                    binding.textViewItem.text = it.item
-                }
+        bag.add(
+                rxDataSource
+                        .map {
+                            it.toUpperCase()
+                        }
+                        .repeat(4)
+                        .asObservable()
+                        .subscribe {
+                            val binding = it.viewDataBinding ?: return@subscribe
+                            binding.textViewItem.text = it.item
+                        }
+        )
+
 
         // Sectioned data source
         val rxDataSourceSectioned = RxDataSourceSectioned(dataSet, viewHolderInfoList, object : OnGetItemViewType() {
@@ -63,17 +67,20 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        rxDataSourceSectioned
-                .asObservable()
-                .subscribe {
-                    val viewDataBinding = it.viewDataBinding
-                    val data = it.item
+        bag.add(
+                rxDataSourceSectioned
+                        .asObservable()
+                        .subscribe {
+                            val viewDataBinding = it.viewDataBinding
+                            val data = it.item
 
-                    when (viewDataBinding) {
-                        is ItemLayoutBinding -> viewDataBinding.textViewItem.text = "ITEM: " + data
-                        is ItemHeaderLayoutBinding -> viewDataBinding.textViewHeader.text = "HEADER: " + data
-                    }
-                }
+                            when (viewDataBinding) {
+                                is ItemLayoutBinding -> viewDataBinding.textViewItem.text = "ITEM: $data"
+                                is ItemHeaderLayoutBinding -> viewDataBinding.textViewHeader.text = "HEADER: $data"
+                            }
+                        }
+        )
+
 
         mActivityMainBinding.sectionedToggle.setOnCheckedChangeListener { compoundButton, checked ->
             if (checked) {
@@ -93,12 +100,23 @@ class MainActivity : AppCompatActivity() {
         val dataSourceSectionedDataSet = rxDataSourceSectioned.dataSet
 
         RxTextView.afterTextChangeEvents(mActivityMainBinding.searchEditText).subscribe { event ->
-            rxDataSource.updateDataSet(dataSourceDataSet) //base items should remain the same
+            rxDataSource.updateDataSet(rxDataSource.dataSet) //base items should remain the same
                     .filter { s -> s.toLowerCase().contains(event.view().text) }
                     .updateAdapter()
             rxDataSourceSectioned.updateDataSet(dataSourceSectionedDataSet) //base items should remain the same
                     .filter { s -> s.toLowerCase().contains(event.view().text) }
-                    .notifyDataSetChanged()
+                    .updateAdapter()
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        bag.clear()
+    }
+
+    companion object {
+        private const val TYPE_HEADER = 0
+        private const val TYPE_ITEM = 1
+    }
+
 }

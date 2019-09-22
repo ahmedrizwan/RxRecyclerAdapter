@@ -45,11 +45,45 @@ class RxDataSource<LayoutBinding : ViewDataBinding, DataType>(@LayoutRes private
     }
 
     /***
+     * For setting base dataSet and update adapter
+     */
+    fun updateDataSet(adapterChanges: AdapterChanges<DataType>): RxDataSource<LayoutBinding, DataType> {
+        this.dataSet = adapterChanges.list
+        when (adapterChanges.transactionType) {
+            AdapterChanges.TransactionTypes.REPLACE_ALL -> notifyDataSetChanged()
+            AdapterChanges.TransactionTypes.MODIFY -> notifyItemChanged(adapterChanges.effectedItem)
+            AdapterChanges.TransactionTypes.DELETE -> notifyItemRemoved(adapterChanges.effectedItem)
+            AdapterChanges.TransactionTypes.ADD -> notifyItemInserted(adapterChanges.effectedItem)
+        }
+        return this
+    }
+
+    /***
      * For updating Adapter
      */
     fun updateAdapter() {
         //update the update
-        rxAdapter.updateDataSet(dataSet)
+        notifyDataSetChanged()
+    }
+
+    private fun notifyDataSetChanged() {
+        //update the update
+        rxAdapter.notifyDataSetChanged(dataSet)
+    }
+
+    private fun notifyItemChanged(position: Int) {
+        //update the update
+        rxAdapter.notifyItemChanged(dataSet, position)
+    }
+
+    private fun notifyItemRemoved(position: Int) {
+        //update the update
+        rxAdapter.notifyItemRemoved(dataSet, position)
+    }
+
+    private fun notifyItemInserted(position: Int) {
+        //update the update
+        rxAdapter.notifyItemInserted(dataSet, position)
     }
 
     // Transformation methods
