@@ -44,16 +44,17 @@ class RxDataSource<LayoutBinding : ViewDataBinding, DataType>(@LayoutRes private
         return this
     }
 
+
     /***
      * For setting base dataSet and update adapter
      */
-    fun updateDataSet(adapterChanges: AdapterChanges<DataType>): RxDataSource<LayoutBinding, DataType> {
-        this.dataSet = adapterChanges.list
-        when (adapterChanges.transactionType) {
-            AdapterChanges.TransactionTypes.REPLACE_ALL -> notifyDataSetChanged()
-            AdapterChanges.TransactionTypes.MODIFY -> notifyItemChanged(adapterChanges.effectedItem)
-            AdapterChanges.TransactionTypes.DELETE -> notifyItemRemoved(adapterChanges.effectedItem)
-            AdapterChanges.TransactionTypes.ADD -> notifyItemInserted(adapterChanges.effectedItem)
+    fun updateDataSet(updatedList: List<DataType>, effectedItem: Int, transactionType: TransactionTypes): RxDataSource<LayoutBinding, DataType> {
+        this.dataSet = updatedList
+        when (transactionType) {
+            TransactionTypes.REPLACE_ALL -> notifyDataSetChanged()
+            TransactionTypes.MODIFY -> notifyItemChanged(effectedItem)
+            TransactionTypes.DELETE -> notifyItemRemoved(effectedItem)
+            TransactionTypes.ADD -> notifyItemInserted(effectedItem)
         }
         return this
     }
@@ -178,6 +179,17 @@ class RxDataSource<LayoutBinding : ViewDataBinding, DataType>(@LayoutRes private
     fun take(count: Long): RxDataSource<LayoutBinding, DataType> {
         dataSet = Observable.fromIterable(dataSet).take(count).toList().blockingGet()
         return this
+    }
+
+    companion object {
+        const val ALL_ITEMS_EFFECTED = -1
+    }
+
+    enum class TransactionTypes {
+        REPLACE_ALL,
+        DELETE,
+        MODIFY,
+        ADD
     }
 
 }

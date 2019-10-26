@@ -35,13 +35,13 @@ class RxDataSourceSectioned<DataType>(var dataSet: List<DataType>, viewHolderInf
     /***
      * For setting base dataSet and update adapter
      */
-    fun updateDataSet(adapterChanges: AdapterChanges<DataType>): RxDataSourceSectioned<DataType> {
-        this.dataSet = adapterChanges.list
-        when (adapterChanges.transactionType) {
-            AdapterChanges.TransactionTypes.REPLACE_ALL -> notifyDataSetChanged()
-            AdapterChanges.TransactionTypes.MODIFY -> notifyItemChanged(adapterChanges.effectedItem)
-            AdapterChanges.TransactionTypes.DELETE -> notifyItemRemoved(adapterChanges.effectedItem)
-            AdapterChanges.TransactionTypes.ADD -> notifyItemInserted(adapterChanges.effectedItem)
+    fun updateDataSet(updatedList: List<DataType>, effectedItem: Int, transactionType: TransactionTypes): RxDataSourceSectioned<DataType> {
+        this.dataSet = updatedList
+        when (transactionType) {
+            TransactionTypes.REPLACE_ALL -> notifyDataSetChanged()
+            TransactionTypes.MODIFY -> notifyItemChanged(effectedItem)
+            TransactionTypes.DELETE -> notifyItemRemoved(effectedItem)
+            TransactionTypes.ADD -> notifyItemInserted(effectedItem)
         }
         return this
     }
@@ -179,6 +179,17 @@ class RxDataSourceSectioned<DataType>(var dataSet: List<DataType>, viewHolderInf
     fun take(count: Long): RxDataSourceSectioned<DataType> {
         dataSet = Observable.fromIterable(dataSet).take(count).toList().blockingGet()
         return this
+    }
+
+    companion object {
+        const val ALL_ITEMS_EFFECTED = -1
+    }
+
+    enum class TransactionTypes {
+        REPLACE_ALL,
+        DELETE,
+        MODIFY,
+        ADD
     }
 
 }
