@@ -1,12 +1,13 @@
+
 # RxRecyclerAdapter
 
 [![Release](https://img.shields.io/badge/jCenter-1.3.1-brightgreen.svg)](https://bintray.com/sbrukhanda/maven/FragmentViewPager)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20Version%202.0-blue.svg)](https://github.com/sbrukhanda/fragmentviewpager/blob/master/LICENSE.txt)
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-RxRecyclerAdapter-green.svg?style=flat)](https://android-arsenal.com/details/1/2084)
 
-Rx based generic RecyclerView Adapter Library. 
+Rx based generic RecyclerView Adapter Library.
 
-## How to use it? 
+## How to use it?
 #### Example!
 - Enable Databinding by adding these lines to your build.gradle
 ```kotlin
@@ -14,7 +15,7 @@ dataBinding {
       enabled = true
 }
 ```
-- Create the layout file 
+- Create the layout file
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -44,7 +45,7 @@ dataSet.add("dolor")
 dataSet.add("sit")
 dataSet.add("amet")
 ```
-- Create RxDataSource 
+- Create RxDataSource
 ```kotlin
 // Simple data source
 val rxDataSource = RxDataSource<ItemLayoutBinding, String>(R.layout.item_layout, dataSet)
@@ -73,7 +74,7 @@ rxDataSource.map(...).filter(...).take(...).updateAdapter();
 If multiple view types are required for your recyclerView, let's say, we have two types HEADER and ITEM then the coding steps will be :-
 - Enable Databinding
 - Create a list of ViewHolderInfo
-```kotlin 
+```kotlin
 //ViewHolderInfo List
 val viewHolderInfoList = ArrayList<ViewHolderInfo>()
 viewHolderInfoList.add(ViewHolderInfo(R.layout.item_layout, TYPE_ITEM))
@@ -109,9 +110,23 @@ And the output would look something like
 
 <img src="https://raw.githubusercontent.com/ahmedrizwan/RxRecyclerAdapter/master/sample/src/main/res/drawable/rx_adapter_types.png" width=400px  />
 
-More examples and details [here](https://medium.com/@ahmedrizwan/simplifying-recyclerview-adapters-with-rx-databinding-f02ebed0b386#.6vy6aq3k8) 
+More examples and details [here](https://medium.com/@ahmedrizwan/simplifying-recyclerview-adapters-with-rx-databinding-f02ebed0b386#.6vy6aq3k8)
 
-## Download 
+### How to update adapter?
+You can update all the data set by call updateDataSet(), then call updateUdapter()  to update the adapter (get "notifiyDataSetChange()" effect)
+```kotlin
+rxDataSource.updateDataSet(newDataSet)
+rxDataSource.updateAdapter()
+```
+  If you want to update one item of the data set, you can use updateDataSet(updatedList, effectedPosition, transactionType),
+```kotlin
+rxDataSource.updateDataSet(
+  dataSet.apply { removeAt(deletedPosition) },
+  deletedPosition,
+  RxDataSource.TransactionTypes.DELETE
+)
+```
+## Download
 Repository available on jCenter
 
 ```Gradle
@@ -121,12 +136,12 @@ compile 'com.minimize.android:rxrecycler-adapter:1.3.1'
 ```Gradle
 repositories {
   maven {
-      url  "http://dl.bintray.com/ahmedrizwan/maven" 
+      url  "http://dl.bintray.com/ahmedrizwan/maven"
   }
 }
 ```
 
-## License 
+## License
 ```
 Copyright 2015 Ahmed Rizwan
 
