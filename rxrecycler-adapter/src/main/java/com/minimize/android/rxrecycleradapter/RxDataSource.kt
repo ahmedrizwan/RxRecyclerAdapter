@@ -44,12 +44,47 @@ class RxDataSource<LayoutBinding : ViewDataBinding, DataType>(@LayoutRes private
         return this
     }
 
+
+    /***
+     * For setting base dataSet and update adapter
+     */
+    fun updateDataSet(updatedList: List<DataType>, effectedItem: Int, transactionType: TransactionTypes): RxDataSource<LayoutBinding, DataType> {
+        this.dataSet = updatedList
+        when (transactionType) {
+            TransactionTypes.REPLACE_ALL -> notifyDataSetChanged()
+            TransactionTypes.MODIFY -> notifyItemChanged(effectedItem)
+            TransactionTypes.DELETE -> notifyItemRemoved(effectedItem)
+            TransactionTypes.ADD -> notifyItemInserted(effectedItem)
+        }
+        return this
+    }
+
     /***
      * For updating Adapter
      */
     fun updateAdapter() {
         //update the update
-        rxAdapter.updateDataSet(dataSet)
+        notifyDataSetChanged()
+    }
+
+    private fun notifyDataSetChanged() {
+        //update the update
+        rxAdapter.notifyDataSetChanged(dataSet)
+    }
+
+    private fun notifyItemChanged(position: Int) {
+        //update the update
+        rxAdapter.notifyItemChanged(dataSet, position)
+    }
+
+    private fun notifyItemRemoved(position: Int) {
+        //update the update
+        rxAdapter.notifyItemRemoved(dataSet, position)
+    }
+
+    private fun notifyItemInserted(position: Int) {
+        //update the update
+        rxAdapter.notifyItemInserted(dataSet, position)
     }
 
     // Transformation methods
@@ -144,6 +179,17 @@ class RxDataSource<LayoutBinding : ViewDataBinding, DataType>(@LayoutRes private
     fun take(count: Long): RxDataSource<LayoutBinding, DataType> {
         dataSet = Observable.fromIterable(dataSet).take(count).toList().blockingGet()
         return this
+    }
+
+    companion object {
+        const val ALL_ITEMS_EFFECTED = -1
+    }
+
+    enum class TransactionTypes {
+        REPLACE_ALL,
+        DELETE,
+        MODIFY,
+        ADD
     }
 
 }

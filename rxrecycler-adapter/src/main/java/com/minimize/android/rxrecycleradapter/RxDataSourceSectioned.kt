@@ -33,6 +33,20 @@ class RxDataSourceSectioned<DataType>(var dataSet: List<DataType>, viewHolderInf
     }
 
     /***
+     * For setting base dataSet and update adapter
+     */
+    fun updateDataSet(updatedList: List<DataType>, effectedItem: Int, transactionType: TransactionTypes): RxDataSourceSectioned<DataType> {
+        this.dataSet = updatedList
+        when (transactionType) {
+            TransactionTypes.REPLACE_ALL -> notifyDataSetChanged()
+            TransactionTypes.MODIFY -> notifyItemChanged(effectedItem)
+            TransactionTypes.DELETE -> notifyItemRemoved(effectedItem)
+            TransactionTypes.ADD -> notifyItemInserted(effectedItem)
+        }
+        return this
+    }
+
+    /***
      * For setting base dataSet
      */
     fun updateDataSet(dataSet: List<DataType>): RxDataSourceSectioned<DataType> {
@@ -49,20 +63,40 @@ class RxDataSourceSectioned<DataType>(var dataSet: List<DataType>, viewHolderInf
      */
     fun updateAdapter() {
         //update the update
-        rxAdapter.updateDataSet(dataSet)
+        notifyDataSetChanged()
+    }
+
+    private fun notifyDataSetChanged() {
+        //update the update
+        rxAdapter.notifyDataSetChanged(dataSet)
+    }
+
+    private fun notifyItemChanged(position: Int) {
+        //update the update
+        rxAdapter.notifyItemChanged(dataSet, position)
+    }
+
+    private fun notifyItemRemoved(position: Int) {
+        //update the update
+        rxAdapter.notifyItemRemoved(dataSet, position)
+    }
+
+    private fun notifyItemInserted(position: Int) {
+        //update the update
+        rxAdapter.notifyItemInserted(dataSet, position)
     }
 
     // Transformation methods
 
     fun map(mapper: Function<in DataType, out DataType>): RxDataSourceSectioned<DataType> {
         dataSet = Observable.fromIterable(dataSet).map(mapper).toList().blockingGet()
-        rxAdapter.updateDataSet(dataSet)
+        rxAdapter.notifyDataSetChanged(dataSet)
         return this
     }
 
     fun filter(predicate: (DataType) -> Boolean): RxDataSourceSectioned<DataType> {
         dataSet = Observable.fromIterable(dataSet).filter(predicate).toList().blockingGet()
-        rxAdapter.updateDataSet(dataSet)
+        rxAdapter.notifyDataSetChanged(dataSet)
         return this
     }
 
@@ -145,6 +179,17 @@ class RxDataSourceSectioned<DataType>(var dataSet: List<DataType>, viewHolderInf
     fun take(count: Long): RxDataSourceSectioned<DataType> {
         dataSet = Observable.fromIterable(dataSet).take(count).toList().blockingGet()
         return this
+    }
+
+    companion object {
+        const val ALL_ITEMS_EFFECTED = -1
+    }
+
+    enum class TransactionTypes {
+        REPLACE_ALL,
+        DELETE,
+        MODIFY,
+        ADD
     }
 
 }
