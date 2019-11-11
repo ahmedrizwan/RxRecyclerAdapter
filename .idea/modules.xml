@@ -5,6 +5,9 @@
       <module fileurl="file://$PROJECT_DIR$/MyRxRecyclerAdapter.iml" filepath="$PROJECT_DIR$/MyRxRecyclerAdapter.iml" />
       <module fileurl="file://$PROJECT_DIR$/rxrecycler-adapter/MyRxRecyclerAdapter-rxrecycler-adapter.iml" filepath="$PROJECT_DIR$/rxrecycler-adapter/MyRxRecyclerAdapter-rxrecycler-adapter.iml" />
       <module fileurl="file://$PROJECT_DIR$/sample/MyRxRecyclerAdapter-sample.iml" filepath="$PROJECT_DIR$/sample/MyRxRecyclerAdapter-sample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RxRecyclerAdapter.iml" filepath="$PROJECT_DIR$/RxRecyclerAdapter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rxrecycler-adapter/RxRecyclerAdapter-rxrecycler-adapter.iml" filepath="$PROJECT_DIR$/rxrecycler-adapter/RxRecyclerAdapter-rxrecycler-adapter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sample/RxRecyclerAdapter-sample.iml" filepath="$PROJECT_DIR$/sample/RxRecyclerAdapter-sample.iml" />
       <module fileurl="file://$PROJECT_DIR$/RxRecyclerExample.iml" filepath="$PROJECT_DIR$/RxRecyclerExample.iml" />
       <module fileurl="file://$PROJECT_DIR$/rxrecycler-adapter/rxrecycler-adapter.iml" filepath="$PROJECT_DIR$/rxrecycler-adapter/rxrecycler-adapter.iml" />
       <module fileurl="file://$PROJECT_DIR$/sample/sample.iml" filepath="$PROJECT_DIR$/sample/sample.iml" />

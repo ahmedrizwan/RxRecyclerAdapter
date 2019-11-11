@@ -1,10 +1,10 @@
 package com.minimize.android.rxrecycleradapter
 
-import android.databinding.ViewDataBinding
-import android.support.annotation.LayoutRes
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
+import androidx.databinding.ViewDataBinding
+import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 
