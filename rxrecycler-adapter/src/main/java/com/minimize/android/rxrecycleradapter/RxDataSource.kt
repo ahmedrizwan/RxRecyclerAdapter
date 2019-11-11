@@ -1,8 +1,8 @@
 package com.minimize.android.rxrecycleradapter
 
-import android.databinding.ViewDataBinding
-import android.support.annotation.LayoutRes
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.LayoutRes
+import androidx.databinding.ViewDataBinding
+import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.Observable
 import java.util.Collections.emptyList
 
@@ -28,7 +28,8 @@ class RxDataSource<LayoutBinding : ViewDataBinding, DataType>(@LayoutRes private
      * @return Observable for binding viewHolder
     </LayoutBinding> */
     fun bindRecyclerView(
-            recyclerView: RecyclerView): Observable<SimpleViewHolder<DataType, LayoutBinding>> {
+            recyclerView: RecyclerView
+    ): Observable<SimpleViewHolder<DataType, LayoutBinding>> {
         recyclerView.adapter = rxAdapter
         return rxAdapter.asObservable()
     }

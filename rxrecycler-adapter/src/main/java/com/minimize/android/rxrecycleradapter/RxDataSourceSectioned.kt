@@ -1,7 +1,7 @@
 package com.minimize.android.rxrecycleradapter
 
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.Observable
 import io.reactivex.functions.Function
 import java.util.*

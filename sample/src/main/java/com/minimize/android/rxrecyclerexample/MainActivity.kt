@@ -1,13 +1,16 @@
 package com.minimize.android.rxrecyclerexample
 
-import android.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
+import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding.widget.RxTextView
-import com.minimize.android.rxrecycleradapter.*
+import com.minimize.android.rxrecycleradapter.OnGetItemViewType
+import com.minimize.android.rxrecycleradapter.RxDataSource
+import com.minimize.android.rxrecycleradapter.RxDataSourceSectioned
+import com.minimize.android.rxrecycleradapter.ViewHolderInfo
 import com.minimize.android.rxrecyclerexample.databinding.ActivityMainBinding
 import com.minimize.android.rxrecyclerexample.databinding.ItemHeaderLayoutBinding
 import com.minimize.android.rxrecyclerexample.databinding.ItemLayoutBinding
@@ -21,8 +24,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val mActivityMainBinding = DataBindingUtil.setContentView<ActivityMainBinding>(this,
-                R.layout.activity_main)
+        val mActivityMainBinding = DataBindingUtil.setContentView<ActivityMainBinding>(
+            this,
+            R.layout.activity_main
+        )
 
         //ViewHolderInfo List
         val viewHolderInfoList = ArrayList<ViewHolderInfo>()
@@ -43,39 +48,41 @@ class MainActivity : AppCompatActivity() {
         val rxDataSource = RxDataSource<ItemLayoutBinding, String>(R.layout.item_layout, dataSet)
 
         bag.add(
-                rxDataSource
-                        .map { it.toUpperCase() }
-                        .repeat(4)
-                        .asObservable()
-                        .subscribe {
-                            val binding = it.viewDataBinding ?: return@subscribe
-                            binding.textViewItem.text = it.item
-                        }
+            rxDataSource
+                .map { it.toUpperCase() }
+                .repeat(4)
+                .asObservable()
+                .subscribe {
+                    val binding = it.viewDataBinding ?: return@subscribe
+                    binding.textViewItem.text = it.item
+                }
         )
 
 
         // Sectioned data source
-        val rxDataSourceSectioned = RxDataSourceSectioned(dataSet, viewHolderInfoList, object : OnGetItemViewType() {
-            override fun getItemViewType(position: Int): Int {
-                if (position % 3 == 0) { // even are headers
-                    return TYPE_HEADER
+        val rxDataSourceSectioned =
+            RxDataSourceSectioned(dataSet, viewHolderInfoList, object : OnGetItemViewType() {
+                override fun getItemViewType(position: Int): Int {
+                    if (position % 3 == 0) { // even are headers
+                        return TYPE_HEADER
+                    }
+                    return TYPE_ITEM
                 }
-                return TYPE_ITEM
-            }
-        })
+            })
 
         bag.add(
-                rxDataSourceSectioned
-                        .asObservable()
-                        .subscribe {
-                            val viewDataBinding = it.viewDataBinding
-                            val data = it.item
+            rxDataSourceSectioned
+                .asObservable()
+                .subscribe {
+                    val viewDataBinding = it.viewDataBinding
+                    val data = it.item
 
-                            when (viewDataBinding) {
-                                is ItemLayoutBinding -> viewDataBinding.textViewItem.text = "ITEM: $data"
-                                is ItemHeaderLayoutBinding -> viewDataBinding.textViewHeader.text = "HEADER: $data"
-                            }
-                        }
+                    when (viewDataBinding) {
+                        is ItemLayoutBinding -> viewDataBinding.textViewItem.text = "ITEM: $data"
+                        is ItemHeaderLayoutBinding -> viewDataBinding.textViewHeader.text =
+                            "HEADER: $data"
+                    }
+                }
         )
 
 
@@ -99,44 +106,46 @@ class MainActivity : AppCompatActivity() {
 
         RxTextView.afterTextChangeEvents(mActivityMainBinding.searchEditText).subscribe { event ->
             rxDataSource.updateDataSet(dataSet) //base items should remain the same
-                    .filter { s -> s.toLowerCase().contains(event.view().text) }
-                    .updateAdapter()
+                .filter { s -> s.toLowerCase().contains(event.view().text) }
+                .updateAdapter()
             rxDataSourceSectioned.updateDataSet(dataSet) //base items should remain the same
-                    .filter { s -> s.toLowerCase().contains(event.view().text) }
-                    .updateAdapter()
+                .filter { s -> s.toLowerCase().contains(event.view().text) }
+                .updateAdapter()
         }
 
-        val asd = ItemTouchHelper(
-                object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.DOWN, ItemTouchHelper.RIGHT) {
-                    override fun onMove(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?, target: RecyclerView.ViewHolder?): Boolean {
-                        return true
-                    }
-
-                    override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
-                        val position = viewHolder?.adapterPosition ?: 0
-
-                        if (mActivityMainBinding.sectionedToggle.isChecked) {
-                            rxDataSourceSectioned.updateDataSet(
-                                    dataSet.apply { removeAt(position) },
-                                    position,
-                                    RxDataSourceSectioned.TransactionTypes.DELETE
-
-                            )
-                        } else {
-                            rxDataSource.updateDataSet(
-                                    dataSet.apply { removeAt(position) },
-                                    position,
-                                    RxDataSource.TransactionTypes.DELETE
-                            )
-
-                        }
-                    }
-
+        val itemTouchHelper = ItemTouchHelper(
+            object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.DOWN, ItemTouchHelper.RIGHT) {
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean {
+                    return true
                 }
+
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    val position = viewHolder?.adapterPosition ?: 0
+
+                    if (mActivityMainBinding.sectionedToggle.isChecked) {
+                        rxDataSourceSectioned.updateDataSet(
+                            dataSet.apply { removeAt(position) },
+                            position,
+                            RxDataSourceSectioned.TransactionTypes.DELETE
+
+                        )
+                    } else {
+                        rxDataSource.updateDataSet(
+                            dataSet.apply { removeAt(position) },
+                            position,
+                            RxDataSource.TransactionTypes.DELETE
+                        )
+                    }
+                }
+            }
         )
 
 
-        asd.attachToRecyclerView(mActivityMainBinding.recyclerView)
+        itemTouchHelper.attachToRecyclerView(mActivityMainBinding.recyclerView)
     }
 
     override fun onDestroy() {
