@@ -18,7 +18,7 @@ ext {
     artifact = 'rxrecycler-adapter'
 
     libraryDescription = 'Rx based generic RecyclerView Adapter Library.'
-    libraryVersion = '1.3.1'
+    libraryVersion = '1.3.2'
 
     developerId = 'ahmedrizwan'
     developerName = 'Ahmed Rizwan'
