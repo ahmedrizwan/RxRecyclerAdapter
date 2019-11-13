@@ -130,7 +130,7 @@ rxDataSource.updateDataSet(
 Repository available on jCenter
 
 ```Gradle
-compile 'com.minimize.android:rxrecycler-adapter:1.3.2'
+implementation 'com.minimize.android:rxrecycler-adapter:1.3.2'
 ```
 *If the dependency fails to resolve, add this to your project repositories*
 ```Gradle
